@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Analytics | AI Startup Ecosystem</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body class="bg-gray-100 min-h-screen">
+
+<!-- NAVBAR -->
+<nav class="bg-indigo-600 p-4 text-white font-semibold">
+  📊 Analytics & Insights – {{ role }}
+</nav>
+
+<div class="max-w-6xl mx-auto p-6">
+
+  <h2 class="text-3xl font-bold mb-6 text-gray-800">
+    Analytics Dashboard
+  </h2>
+
+  <!-- CHART GRID -->
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+
+    {% if role == "Founder" %}
+      <canvas id="teamGrowth"></canvas>
+      <canvas id="pitchPerformance"></canvas>
+    {% endif %}
+
+    {% if role == "Investor" %}
+      <canvas id="portfolioValue"></canvas>
+      <canvas id="riskAnalysis"></canvas>
+    {% endif %}
+
+    {% if role == "Talent" %}
+      <canvas id="skillDemand"></canvas>
+      <canvas id="profileVisibility"></canvas>
+    {% endif %}
+
+  </div>
+</div>
+
+<script>
+{% if role == "Founder" %}
+new Chart(document.getElementById('teamGrowth'), {
+  type: 'line',
+  data: {
+    labels: ['Jan','Feb','Mar','Apr'],
+    datasets: [{
+      label: 'Team Growth',
+      data: {{ analytics.team_growth | tojson }},
+      borderColor: 'blue',
+      fill: false
+    }]
+  }
+});
+
+new Chart(document.getElementById('pitchPerformance'), {
+  type: 'bar',
+  data: {
+    labels: ['Pitch 1','Pitch 2','Pitch 3','Pitch 4'],
+    datasets: [{
+      label: 'Pitch Performance (%)',
+      data: {{ analytics.pitch_performance | tojson }},
+      backgroundColor: 'green'
+    }]
+  }
+});
+{% endif %}
+
+{% if role == "Investor" %}
+new Chart(document.getElementById('portfolioValue'), {
+  type: 'line',
+  data: {
+    labels: ['Q1','Q2','Q3','Q4'],
+    datasets: [{
+      label: 'Portfolio Value',
+      data: {{ analytics.portfolio_value | tojson }},
+      borderColor: 'purple'
+    }]
+  }
+});
+
+new Chart(document.getElementById('riskAnalysis'), {
+  type: 'bar',
+  data: {
+    labels: ['High','Medium','Low','Very Low'],
+    datasets: [{
+      label: 'Risk Level',
+      data: {{ analytics.risk_analysis | tojson }},
+      backgroundColor: 'red'
+    }]
+  }
+});
+{% endif %}
+
+{% if role == "Talent" %}
+new Chart(document.getElementById('skillDemand'), {
+  type: 'bar',
+  data: {
+    labels: ['AI','Web','Data','Cloud'],
+    datasets: [{
+      label: 'Skill Demand',
+      data: {{ analytics.skill_demand | tojson }},
+      backgroundColor: 'orange'
+    }]
+  }
+});
+
+new Chart(document.getElementById('profileVisibility'), {
+  type: 'line',
+  data: {
+    labels: ['Week 1','Week 2','Week 3','Week 4'],
+    datasets: [{
+      label: 'Profile Visibility',
+      data: {{ analytics.profile_visibility | tojson }},
+      borderColor: 'blue'
+    }]
+  }
+});
+{% endif %}
+</script>
+
+</body>
+</html>

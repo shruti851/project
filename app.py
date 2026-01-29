@@ -242,6 +242,46 @@ def market_insights():
         "market_insights.html",
         stats=domain_stats
 )
+@app.route('/analytics')
+def analytics():
+    if 'user_id' not in session:
+        return redirect('/login')
+
+    role = session['role']
+    user_id = session['user_id']
+
+    analytics_data = {}
+
+    # ---------- FOUNDER ANALYTICS ----------
+    if role == "Founder":
+        analytics_data = {
+            "team_growth": [2, 4, 6, 8],
+            "investor_interest": [1, 3, 5, 7],
+            "pitch_performance": [60, 70, 85, 90]
+        }
+
+    # ---------- INVESTOR ANALYTICS ----------
+    elif role == "Investor":
+        analytics_data = {
+            "portfolio_value": [10, 15, 20, 30],
+            "risk_analysis": [30, 25, 20, 15],
+            "sector_trends": [40, 30, 20, 10]
+        }
+
+    # ---------- TALENT ANALYTICS ----------
+    elif role == "Talent":
+        analytics_data = {
+            "skill_demand": [80, 70, 60, 90],
+            "active_opportunities": [3, 6, 9, 12],
+            "profile_visibility": [50, 65, 75, 90]
+        }
+
+    return render_template(
+        "analytics.html",
+        role=role,
+        analytics=analytics_data
+    )
+
 @app.route('/dashboard')
 def dashboard():
     if 'user_id' not in session:
@@ -287,5 +327,12 @@ def dashboard():
 
 
 
-if __name__ == '__main__':
-    app.run(debug=True)
+if __name__ == "__main__":
+    app.run(
+        host="127.0.0.1",
+        port=5000,
+        debug=True,
+        threaded=False,
+        use_reloader=False
+    )
+
