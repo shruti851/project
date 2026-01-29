@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Funding Requests</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100">
+
+<div class="max-w-4xl mx-auto mt-8">
+  <h2 class="text-2xl font-bold mb-4">Funding Offers</h2>
+
+  {% for r in requests %}
+  <div class="bg-white p-4 mb-3 rounded shadow">
+    <p><strong>Investor:</strong> {{ r.investor_name }}</p>
+    <p><strong>Amount:</strong> {{ r.amount }}</p>
+    <p><strong>Equity:</strong> {{ r.equity }}%</p>
+    <p><strong>Status:</strong> {{ r.status }}</p>
+
+    {% if r.status == "Pending" %}
+      <a href="/funding-decision/{{ r._id }}/Accepted"
+         class="bg-green-600 text-white px-3 py-1 rounded mr-2">
+         Accept
+      </a>
+      <a href="/funding-decision/{{ r._id }}/Rejected"
+         class="bg-red-600 text-white px-3 py-1 rounded">
+         Reject
+      </a>
+    {% endif %}
+  </div>
+  {% endfor %}
+</div>
+
+</body>
+</html>

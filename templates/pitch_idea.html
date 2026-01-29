@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Pitch Startup</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100">
+
+<nav class="bg-blue-700 p-4 text-white text-lg">
+  AI-Powered Startup Ecosystem
+</nav>
+
+<div class="max-w-3xl mx-auto mt-8 bg-white p-6 rounded-lg shadow">
+
+  <h2 class="text-2xl font-bold mb-1">Pitch Your Startup Idea</h2>
+  <p class="text-gray-600 mb-6">
+    Share your vision with investors and talent
+  </p>
+
+  <form method="POST" enctype="multipart/form-data" class="space-y-5">
+
+    <div>
+      <label class="font-semibold">Startup Title</label>
+      <input name="title" class="w-full p-2 border rounded" required>
+    </div>
+
+    <div class="grid grid-cols-2 gap-4">
+      <div>
+        <label class="font-semibold">Domain</label>
+        <input name="domain" class="w-full p-2 border rounded">
+      </div>
+
+      <div>
+        <label class="font-semibold">Funding Required (₹ / $)</label>
+        <input name="funding" class="w-full p-2 border rounded">
+      </div>
+    </div>
+
+    <div>
+      <label class="font-semibold">Problem & Solution</label>
+      <textarea name="description" rows="4"
+        class="w-full p-2 border rounded"></textarea>
+    </div>
+
+    <div>
+      <label class="font-semibold">Team Requirements</label>
+      <input name="team" class="w-full p-2 border rounded"
+             placeholder="Frontend, Backend, AI Engineer">
+    </div>
+
+    <div>
+      <label class="font-semibold">Project Visibility</label>
+      <select name="visibility" class="w-full p-2 border rounded">
+        <option value="Public">Public (Visible to Investors)</option>
+        <option value="Private">Private</option>
+      </select>
+    </div>
+
+    <div>
+      <label class="font-semibold">Upload Documents</label>
+      <input type="file" name="documents" multiple>
+      <p class="text-sm text-gray-500">
+        Pitch deck, Business model, Problem statement
+      </p>
+    </div>
+
+    <button
+      class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700">
+      Submit Startup Idea
+    </button>
+
+  </form>
+</div>
+
+</body>
+</html>

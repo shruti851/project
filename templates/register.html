@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Register | AI Startup Ecosystem</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="min-h-screen flex items-center justify-center bg-gradient-to-br from-amber-50 to-orange-100">
+
+  <!-- Decorative blobs -->
+  <div class="absolute top-16 left-24 w-56 h-56 bg-gradient-to-br from-orange-400 to-yellow-300 rounded-full blur-3xl opacity-40"></div>
+  <div class="absolute bottom-20 right-32 w-44 h-44 bg-gradient-to-br from-pink-400 to-orange-300 rounded-full blur-2xl opacity-30"></div>
+
+  <!-- Register Card -->
+  <div class="relative bg-white w-full max-w-md rounded-xl shadow-xl p-8 z-10">
+
+    <!-- Title -->
+    <div class="text-center mb-6">
+      <h1 class="text-3xl font-bold text-gray-800">Create your account</h1>
+      <p class="text-gray-500 mt-2">Join the AI Startup Ecosystem</p>
+    </div>
+
+    <!-- Register Form -->
+    <form method="POST" class="space-y-4">
+
+      <!-- Name -->
+      <div>
+        <label class="block text-sm font-medium text-gray-600 mb-1">
+          Full Name
+        </label>
+        <div class="flex items-center border rounded-lg px-3 py-2">
+          <span class="text-gray-400 mr-2">👤</span>
+          <input
+            type="text"
+            name="name"
+            placeholder="Your full name"
+            class="w-full outline-none"
+            required
+          >
+        </div>
+      </div>
+
+      <!-- Email -->
+      <div>
+        <label class="block text-sm font-medium text-gray-600 mb-1">
+          Email Address
+        </label>
+        <div class="flex items-center border rounded-lg px-3 py-2">
+          <span class="text-gray-400 mr-2">📧</span>
+          <input
+            type="email"
+            name="email"
+            placeholder="you@example.com"
+            class="w-full outline-none"
+            required
+          >
+        </div>
+      </div>
+
+      <!-- Password -->
+      <div>
+        <label class="block text-sm font-medium text-gray-600 mb-1">
+          Password
+        </label>
+        <div class="flex items-center border rounded-lg px-3 py-2">
+          <span class="text-gray-400 mr-2">🔒</span>
+          <input
+            type="password"
+            name="password"
+            placeholder="Create a strong password"
+            class="w-full outline-none"
+            required
+          >
+        </div>
+      </div>
+
+      <!-- Role -->
+      <div>
+        <label class="block text-sm font-medium text-gray-600 mb-1">
+          Select Role
+        </label>
+        <select
+          name="role"
+          class="w-full border rounded-lg px-3 py-2 outline-none bg-white"
+          required
+        >
+          <option value="Founder">Founder</option>
+          <option value="Talent">Talent</option>
+          <option value="Investor">Investor</option>
+          <option value="Admin">Admin</option>
+        </select>
+      </div>
+
+      <!-- Register Button -->
+      <button
+        type="submit"
+        class="w-full py-3 rounded-full text-white font-semibold
+               bg-gradient-to-r from-blue-500 to-blue-600
+               hover:scale-105 transition-transform shadow-lg">
+        Create Account
+      </button>
+    </form>
+
+    <!-- Login Link -->
+    <div class="text-center mt-6 text-sm">
+      <a href="/login" class="text-blue-600 hover:underline">
+        Already have an account?
+      </a>
+    </div>
+
+  </div>
+
+</body>
+</html>

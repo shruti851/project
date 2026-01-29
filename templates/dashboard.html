@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Dashboard | AI Startup Ecosystem</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="min-h-screen bg-gradient-to-br from-slate-100 via-gray-100 to-slate-200">
+
+<!-- BACKGROUND DECOR -->
+<div class="absolute top-20 left-20 w-72 h-72 bg-blue-400 rounded-full blur-3xl opacity-20"></div>
+<div class="absolute bottom-24 right-24 w-72 h-72 bg-purple-400 rounded-full blur-3xl opacity-20"></div>
+
+<!-- NAVBAR -->
+<nav class="relative z-10 bg-white/70 backdrop-blur-lg shadow-md px-6 py-4 flex justify-between items-center">
+  <h1 class="text-xl font-bold text-blue-700">
+    🚀 AI-Powered Startup Ecosystem
+  </h1>
+  <span class="px-4 py-1 rounded-full bg-blue-100 text-blue-700 text-sm font-semibold">
+    {{ role }}
+  </span>
+</nav>
+
+<!-- MAIN -->
+<div class="relative z-10 max-w-7xl mx-auto px-6 py-10">
+
+  <!-- HEADER -->
+  <div class="mb-10">
+    <h2 class="text-4xl font-extrabold text-gray-800">
+      Welcome, {{ name }} 👋
+    </h2>
+    <p class="text-gray-600 mt-2 text-lg">
+      Your personalized control center
+    </p>
+  </div>
+  <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-10">
+
+  <div class="stat-card">
+    <h4>Total Startups</h4>
+    <span>{{ stats.startups or 0 }}</span>
+  </div>
+
+  <div class="stat-card">
+    <h4>Funding Requests</h4>
+    <span>{{ stats.funding or stats.applications or 0 }}</span>
+  </div>
+
+  <div class="stat-card">
+    <h4>Performance</h4>
+    <span>{{ stats.roi or "—" }}</span>
+  </div>
+
+</div>
+
+
+  <!-- DASHBOARD GRID -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+
+    {% if role == "Founder" %}
+    <a href="/pitch" class="glass-card hover-border-blue">
+      <span class="card-icon bg-blue-600">🚀</span>
+      <h3>Pitch Startup</h3>
+      <p>Share ideas & upload pitch decks</p>
+    </a>
+
+    <a href="/create-role" class="glass-card hover-border-indigo">
+      <span class="card-icon bg-indigo-600">👥</span>
+      <h3>Create Open Roles</h3>
+      <p>Find the right talent</p>
+    </a>
+
+    <a href="/funding-requests" class="glass-card hover-border-green">
+      <span class="card-icon bg-green-600">💰</span>
+      <h3>Funding Requests</h3>
+      <p>Review investor offers</p>
+    </a>
+    {% endif %}
+
+    {% if role == "Talent" %}
+    <a href="/roles" class="glass-card hover-border-green">
+      <span class="card-icon bg-green-600">📄</span>
+      <h3>Apply for Roles</h3>
+      <p>Join innovative startups</p>
+    </a>
+
+    <a href="/applications" class="glass-card hover-border-yellow">
+      <span class="card-icon bg-yellow-500">🔔</span>
+      <h3>Application Status</h3>
+      <p>Track your applications</p>
+    </a>
+
+    <a href="/ai-skill-match" class="glass-card hover-border-purple">
+      <span class="card-icon bg-purple-600">🤖</span>
+      <h3>AI Skill Matching</h3>
+      <p>Smart job recommendations</p>
+    </a>
+    {% endif %}
+
+    {% if role == "Investor" %}
+    <a href="/investor/startups" class="glass-card hover-border-purple">
+      <span class="card-icon bg-purple-600">📊</span>
+      <h3>Browse Startups</h3>
+      <p>Explore investment opportunities</p>
+    </a>
+
+    <a href="/investor/portfolio" class="glass-card hover-border-blue">
+      <span class="card-icon bg-blue-600">💼</span>
+      <h3>Investment Portfolio</h3>
+      <p>Your funded startups</p>
+    </a>
+
+    <a href="/investor/insights" class="glass-card hover-border-pink">
+      <span class="card-icon bg-pink-600">📈</span>
+      <h3>Market Insights</h3>
+      <p>AI-powered analytics</p>
+    </a>
+    {% endif %}
+
+  </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<div class="bg-white rounded-xl shadow-lg p-6 mt-12">
+  <h3 class="text-xl font-bold mb-4 text-gray-800">
+    📊 Platform Analytics
+  </h3>
+  <canvas id="analyticsChart"></canvas>
+</div>
+
+<script>
+const ctx = document.getElementById('analyticsChart');
+
+new Chart(ctx, {
+  type: 'bar',
+  data: {
+    labels: ['Startups', 'Funding', 'Users'],
+    datasets: [{
+      label: 'Growth Overview',
+      data: [12, 8, 20],
+      backgroundColor: [
+        'rgba(59,130,246,0.7)',
+        'rgba(34,197,94,0.7)',
+        'rgba(168,85,247,0.7)'
+      ],
+      borderRadius: 8
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      legend: { display: false }
+    }
+  }
+});
+</script>
+
+
+<!-- EXTRA CSS -->
+<style>
+.glass-card {
+  background: rgba(255,255,255,0.75);
+  backdrop-filter: blur(14px);
+  border-radius: 1.25rem;
+  padding: 1.75rem;
+  border: 1px solid rgba(255,255,255,0.4);
+  box-shadow: 0 20px 35px rgba(0,0,0,0.08);
+  transition: all 0.35s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.glass-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(120deg, transparent, rgba(255,255,255,0.6), transparent);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.glass-card:hover::before {
+  opacity: 1;
+}
+
+.glass-card:hover {
+  transform: translateY(-10px) scale(1.02);
+}
+
+.glass-card h3 {
+  margin-top: 1rem;
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #1f2937;
+}
+
+.glass-card p {
+  margin-top: 0.4rem;
+  color: #6b7280;
+  font-size: 0.95rem;
+}
+
+.card-icon {
+  width: 3.2rem;
+  height: 3.2rem;
+  border-radius: 0.9rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 1.6rem;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+}
+
+/* Hover Borders */
+.hover-border-blue:hover { border-color: #3b82f6; }
+.hover-border-indigo:hover { border-color: #6366f1; }
+.hover-border-green:hover { border-color: #22c55e; }
+.hover-border-yellow:hover { border-color: #eab308; }
+.hover-border-purple:hover { border-color: #a855f7; }
+.hover-border-pink:hover { border-color: #ec4899; }
+.stat-card {
+  background: linear-gradient(135deg, #ffffff, #f9fafb);
+  border-radius: 1.2rem;
+  padding: 1.5rem;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+  transition: transform 0.3s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-6px);
+}
+
+.stat-card h4 {
+  font-size: 0.9rem;
+  color: #6b7280;
+}
+
+.stat-card span {
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: #2563eb;
+}
+
+</style>
+
+</body>
+</html>
