@@ -1,0 +1,12 @@
+<h2 class="text-2xl font-bold">Investor Matches</h2>
+
+<table class="mt-4 w-full border">
+<tr><th>Name</th><th>Match %</th></tr>
+
+{% for m in matches %}
+<tr>
+  <td>{{ m.name }}</td>
+  <td>{{ m.score }}%</td>
+</tr>
+{% endfor %}
+</table>

@@ -2,6 +2,10 @@ from flask import Flask, render_template, request, redirect, url_for
 from bson import ObjectId
 from flask import session
 from pymongo import MongoClient
+from ai_engine import match_startup_investors, match_talent
+from ai_routes import *
+
+
 
 app = Flask(__name__)
 
@@ -18,6 +22,9 @@ applications_col = db["applications"]
 funding_requests_col = db["funding_requests"]
 funding_decisions_col = db["funding_decisions"]
 investments_col = db["investments"]
+feedback_col = db["ai_feedback"]
+matches_col = db["ai_matches"]
+
 
 
 
@@ -26,6 +33,12 @@ def home():
     if 'user_id' in session:
         return redirect(url_for('dashboard'))
     return render_template('home.html')
+
+@app.route('/logout')
+def logout():
+    session.clear()   # removes user_id, role, name, etc.
+    return redirect(url_for('login'))
+
 
 # ---------------- MODULE 1: REGISTER ----------------
 @app.route('/register', methods=['GET', 'POST'])
@@ -63,17 +76,23 @@ def login():
 # ---------------- MODULE 2: PITCH IDEA ----------------
 @app.route('/pitch', methods=['GET', 'POST'])
 def pitch():
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+
     if request.method == 'POST':
         startup = {
-    "title": request.form['title'],
-    "domain": request.form['domain'],
-    "description": request.form['description'],
-    "funding": request.form['funding'],
-    "founder_id": session['user_id']   # ✅ ADD HERE
-}
+            "title": request.form['title'],
+            "domain": request.form['domain'],
+            "description": request.form['description'],
+            "funding": int(request.form['funding']),  # convert to number
+            "founder_id": session['user_id']           #  REQUIRED
+        }
+
         startups_col.insert_one(startup)
-        return redirect(url_for('view_startups'))
+        return redirect(url_for('dashboard'))  # better UX
+
     return render_template('pitch_idea.html')
+
 
 # ---------------- MODULE 2: VIEW STARTUPS ----------------
 @app.route('/startups')
@@ -151,6 +170,24 @@ def apply_role(role_id):
 
     return render_template('apply_role.html', role=role)
 
+@app.route('/ai-skill-match')
+def ai_skill_match():
+    if 'user_id' not in session or session.get('role') != 'Talent':
+        return redirect(url_for('login'))
+
+    # Fetch talent profile
+    talent = users_col.find_one({"_id": session['user_id']})
+
+    # Dummy AI recommendations (for now)
+    recommended_roles = list(roles_col.find().limit(5))
+
+    return render_template(
+        'ai_skill_match.html',
+        talent=talent,
+        roles=recommended_roles
+    )
+
+
 
 # ---------------- VIEW APPLICATIONS (FOUNDER) ----------------
 @app.route('/applications')
@@ -173,7 +210,7 @@ def fund_startup(startup_id):
     if request.method == 'POST':
         request_data = {
     "startup_id": startup_id,
-    "founder_id": startup['founder_id'],   # ✅ ADD HERE
+    "founder_id": startup['founder_id'],   #  ADD HERE
     "investor_id": session['user_id'],      # optional but good
     "investor_name": request.form['investor_name'],
     "amount": request.form['amount'],
@@ -285,7 +322,10 @@ def analytics():
 @app.route('/dashboard')
 def dashboard():
     if 'user_id' not in session:
-        return redirect('/login')
+        return redirect(url_for('login'))
+    
+   
+
 
     role = session['role']
     name = session['name']
@@ -296,13 +336,13 @@ def dashboard():
         stats = {
             "startups": startups_col.count_documents({"founder_id": session['user_id']}),
             "funding": funding_requests_col.count_documents({"founder_id": session['user_id']}),
-            "roi": "—"
+            "roi": "_"
         }
 
     elif role == "Talent":
         stats = {
             "applications": applications_col.count_documents({"talent_id": session['user_id']}),
-            "roi": "—"
+            "roi": "_"
         }
 
     elif role == "Investor":
@@ -324,7 +364,44 @@ def dashboard():
         stats=stats,
         chart_data=chart_data
     )
+@app.route('/ai/investor-match/<startup_id>')
+def investor_match(startup_id):
+    startup = startups_col.find_one({"_id": ObjectId(startup_id)})
+    investors = list(users_col.find())
 
+    matches = match_startup_investors(
+        startup["description"],
+        investors
+    )
+
+    return render_template(
+        "investor_match.html",
+        startup=startup,
+        matches=matches
+    )
+@app.route('/ai/talent-match/<startup_id>')
+def talent_match(startup_id):
+    startup = startups_col.find_one({"_id": ObjectId(startup_id)})
+    talents = list(users_col.find())
+
+    matches = match_talent(
+        startup["skills_required"],
+        talents
+    )
+
+    return render_template(
+        "talent_match.html",
+        startup=startup,
+        matches=matches
+    )
+@app.route('/feedback', methods=['POST'])
+def feedback():
+    feedback_col.insert_one({
+        "startup_id": request.form["startup_id"],
+        "user_id": request.form["user_id"],
+        "rating": int(request.form["rating"])
+    })
+    return redirect('/dashboard')
 
 
 if __name__ == "__main__":
