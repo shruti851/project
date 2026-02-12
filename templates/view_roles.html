@@ -2,6 +2,11 @@
 <html>
 <head>
   <title>Open Roles</title>
+  <script>
+  tailwind.config = {
+    darkMode: 'class'
+  }
+</script>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-100">
@@ -19,6 +24,10 @@
        class="inline-block mt-2 bg-green-600 text-white px-4 py-1 rounded">
        Apply
     </a>
+    <a href="/ai/talent-match/{{ startup._id }}" class="btn btn-dark">
+    Find AI Talent Match
+</a>
+
   </div>
   {% endfor %}
 </div>

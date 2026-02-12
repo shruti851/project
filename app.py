@@ -1,14 +1,9 @@
-from flask import Flask, render_template, request, redirect, url_for
-from bson import ObjectId
-from flask import session
+from flask import Flask, render_template, request, redirect, url_for, session
 from pymongo import MongoClient
+from bson import ObjectId
 from ai_engine import match_startup_investors, match_talent
-from ai_routes import *
-
-
 
 app = Flask(__name__)
-
 app.secret_key = "startup_secret"
 
 # ---------------- MONGODB CONNECTION ----------------
@@ -25,8 +20,9 @@ investments_col = db["investments"]
 feedback_col = db["ai_feedback"]
 matches_col = db["ai_matches"]
 
-
-
+# =====================================================
+# HOME
+# =====================================================
 
 @app.route('/')
 def home():
@@ -34,27 +30,35 @@ def home():
         return redirect(url_for('dashboard'))
     return render_template('home.html')
 
+
 @app.route('/logout')
 def logout():
-    session.clear()   # removes user_id, role, name, etc.
+    session.clear()
     return redirect(url_for('login'))
 
 
-# ---------------- MODULE 1: REGISTER ----------------
+# =====================================================
+# REGISTER
+# =====================================================
+
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
-        user = {
+        users_col.insert_one({
             "name": request.form['name'],
             "email": request.form['email'],
-            "password": request.form['password'],  # (hash later)
+            "password": request.form['password'],
             "role": request.form['role']
-        }
-        users_col.insert_one(user)
+        })
         return redirect(url_for('login'))
+
     return render_template('register.html')
 
-# ---------------- MODULE 1: LOGIN ----------------
+
+# =====================================================
+# LOGIN
+# =====================================================
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
@@ -73,301 +77,278 @@ def login():
 
     return render_template('login.html')
 
-# ---------------- MODULE 2: PITCH IDEA ----------------
+
+# =====================================================
+# DASHBOARD (DYNAMIC + FIXED)
+# =====================================================
+
+@app.route('/dashboard')
+def dashboard():
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+
+    role = session['role']
+    user_id = session['user_id']
+
+    stats = {}
+    labels = []
+
+    if role == "Founder":
+        stats = {
+            "Startups": startups_col.count_documents({"founder_id": user_id}),
+            "Funding Requests": funding_requests_col.count_documents({"founder_id": user_id}),
+            "Total Users": users_col.count_documents({})
+        }
+
+    elif role == "Investor":
+        stats = {
+            "Total Startups": startups_col.count_documents({}),
+            "My Investments": investments_col.count_documents({"investor_id": user_id}),
+            "Total Users": users_col.count_documents({})
+        }
+
+    elif role == "Talent":
+        stats = {
+            "Available Roles": roles_col.count_documents({}),
+            "My Applications": applications_col.count_documents({"talent_id": user_id}),
+            "Total Startups": startups_col.count_documents({})
+        }
+
+    labels = list(stats.keys())
+    chart_data = list(stats.values())
+
+    return render_template(
+        "dashboard.html",
+        name=session['name'],
+        role=role,
+        stats=stats,
+        chart_data=chart_data,
+        chart_labels=labels
+    )
+
+
+# =====================================================
+# PITCH STARTUP
+# =====================================================
+
 @app.route('/pitch', methods=['GET', 'POST'])
 def pitch():
     if 'user_id' not in session:
         return redirect(url_for('login'))
 
     if request.method == 'POST':
-        startup = {
+        startups_col.insert_one({
             "title": request.form['title'],
             "domain": request.form['domain'],
             "description": request.form['description'],
-            "funding": int(request.form['funding']),  # convert to number
-            "founder_id": session['user_id']           #  REQUIRED
-        }
+            "funding": int(request.form['funding']),
+            "founder_id": session['user_id']
+        })
 
-        startups_col.insert_one(startup)
-        return redirect(url_for('dashboard'))  # better UX
+        return redirect(url_for('dashboard'))
 
     return render_template('pitch_idea.html')
 
 
-# ---------------- MODULE 2: VIEW STARTUPS ----------------
+# =====================================================
+# VIEW STARTUPS (FOUNDER)
+# =====================================================
+
 @app.route('/startups')
 def view_startups():
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+
     startups = startups_col.find({
-    "founder_id": session['user_id']
-})
+        "founder_id": session['user_id']
+    })
 
     return render_template('view_startups.html', startups=startups)
 
-@app.route('/update-startup/<startup_id>', methods=['GET', 'POST'])
-def update_startup(startup_id):
-    startup = startups_col.find_one({
-        "_id": ObjectId(startup_id),
-        "founder_id": session['user_id']  # ownership check
-    })
 
-    if request.method == 'POST':
-        startups_col.update_one(
-            {"_id": ObjectId(startup_id)},
-            {"$set": {
-                "funding": request.form['funding'],
-                "team": request.form['team'],
-                "visibility": request.form['visibility']
-            }}
-        )
-        return redirect('/view-startups')
+# =====================================================
+# CREATE ROLE
+# =====================================================
 
-    return render_template('update_startup.html', startup=startup)
-
-
-# ---------------- MODULE 3: CREATE OPEN ROLE (FOUNDER) ----------------
 @app.route('/create-role', methods=['GET', 'POST'])
 def create_role():
-    if request.method == 'POST':
-        role = {
-    "startup_title": request.form['startup_title'],
-    "role_name": request.form['role_name'],
-    "skills": request.form['skills'],
-    "founder_id": session['user_id']   
-}
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
 
-        db.roles.insert_one(role)
+    if request.method == 'POST':
+        roles_col.insert_one({
+            "startup_title": request.form['startup_title'],
+            "role_name": request.form['role_name'],
+            "skills": request.form['skills'],
+            "founder_id": session['user_id']
+        })
+
         return redirect(url_for('view_roles'))
+
     return render_template('create_role.html')
 
 
-# ---------------- VIEW OPEN ROLES (TALENT) ----------------
+# =====================================================
+# VIEW ROLES
+# =====================================================
+
 @app.route('/roles')
 def view_roles():
-    roles = roles_col.find({
-    "founder_id": session['user_id']
-})
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+
+    roles = roles_col.find()
 
     return render_template('view_roles.html', roles=roles)
 
 
-# ---------------- APPLY FOR ROLE (TALENT) ----------------
+
+# =====================================================
+# APPLY ROLE (FIXED TALENT ID)
+# =====================================================
+
 @app.route('/apply/<role_id>', methods=['GET', 'POST'])
 def apply_role(role_id):
-    from bson import ObjectId
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
 
-    role = db.roles.find_one({"_id": ObjectId(role_id)})
+    if session['role'] != "Talent":
+        return "Access Denied"
+
+    role = roles_col.find_one({"_id": ObjectId(role_id)})
+
+    if not role:
+        return "Role Not Found"
 
     if request.method == 'POST':
-        application = {
+        applications_col.insert_one({
             "role_id": role_id,
-            "talent_name": request.form['talent_name'],
+            "talent_id": session['user_id'],
+            "talent_name": session['name'],
             "email": request.form['email'],
             "skills": request.form['skills'],
             "status": "Pending"
-        }
-        db.applications.insert_one(application)
-        return redirect(url_for('view_roles'))
+        })
+
+        return redirect(url_for('my_applications'))
 
     return render_template('apply_role.html', role=role)
 
-@app.route('/ai-skill-match')
-def ai_skill_match():
-    if 'user_id' not in session or session.get('role') != 'Talent':
+@app.route('/my-applications')
+def my_applications():
+    if 'user_id' not in session:
         return redirect(url_for('login'))
 
-    # Fetch talent profile
-    talent = users_col.find_one({"_id": session['user_id']})
+    if session['role'] != "Talent":
+        return "Access Denied"
 
-    # Dummy AI recommendations (for now)
-    recommended_roles = list(roles_col.find().limit(5))
+    applications = list(applications_col.find({
+        "talent_id": session['user_id']
+    }))
+
+    for app in applications:
+        role = roles_col.find_one({"_id": ObjectId(app["role_id"])})
+        app["role_name"] = role["role_name"] if role else "Unknown"
 
     return render_template(
-        'ai_skill_match.html',
-        talent=talent,
-        roles=recommended_roles
+        "my_applications.html",
+        applications=applications
+    )
+
+@app.route('/ai/talent-match/<startup_id>')
+def talent_match(startup_id):
+    startup = startups_col.find_one({"_id": ObjectId(startup_id)})
+    talents = list(users_col.find({"role": "Talent"}))
+
+    matches = match_talent(
+        startup.get("description", ""),
+        talents
+    )
+
+    return render_template(
+        "talent_match.html",
+        startup=startup,
+        matches=matches
     )
 
 
 
-# ---------------- VIEW APPLICATIONS (FOUNDER) ----------------
-@app.route('/applications')
-def view_applications():
-    applications = list(db.applications.find())
-    return render_template('view_applications.html', applications=applications)
+# =====================================================
+# INVESTOR VIEW STARTUPS
+# =====================================================
 
-# ---------------- MODULE 4: INVESTOR VIEW STARTUPS ----------------
 @app.route('/investor/startups')
 def investor_view_startups():
-    startups = list(startups_col.find())
+    startups = startups_col.find()
     return render_template('investor_startups.html', startups=startups)
 
 
-# ---------------- INVESTOR SEND FUNDING REQUEST ----------------
-@app.route('/fund/<startup_id>', methods=['GET', 'POST'])
-def fund_startup(startup_id):
-    startup = startups_col.find_one({"_id": ObjectId(startup_id)})
-
-    if request.method == 'POST':
-        request_data = {
-    "startup_id": startup_id,
-    "founder_id": startup['founder_id'],   #  ADD HERE
-    "investor_id": session['user_id'],      # optional but good
-    "investor_name": request.form['investor_name'],
-    "amount": request.form['amount'],
-    "equity": request.form['equity'],
-    "status": "Pending"
-}
-
-        funding_requests_col.insert_one(request_data)
-        return redirect(url_for('investor_view_startups'))
-
-    return render_template('fund_startup.html', startup=startup)
-
-
-# ---------------- FOUNDER VIEW FUNDING REQUESTS ----------------
-@app.route('/funding-requests')
-def view_funding_requests():
-    requests = funding_requests_col.find({
-        "founder_id": session['user_id']
-    })
-    return render_template('view_funding_requests.html', requests=requests)
-
-
-
-# ---------------- ACCEPT / REJECT OFFER ----------------
-@app.route('/funding-decision/<request_id>/<decision>')
-def funding_decision(request_id, decision):
-    funding_requests_col.update_one(
-        {"_id": ObjectId(request_id)},
-        {"$set": {"status": decision}}
-    )
-
-    funding_decisions_col.insert_one({
-        "request_id": request_id,
-        "decision": decision
-    })
-
-    return redirect(url_for('view_funding_requests'))
+# =====================================================
+# INVEST
+# =====================================================
 
 @app.route('/invest/<startup_id>', methods=['POST'])
 def invest(startup_id):
-    investment = {
+    investments_col.insert_one({
         "startup_id": startup_id,
         "investor_id": session['user_id'],
         "amount": request.form['amount'],
-        "status": "Pending"
-    }
-    investments_col.insert_one(investment)
-    return redirect('/investor/portfolio')
+        "status": "Approved"
+    })
+
+    return redirect(url_for('investor_portfolio'))
+
+
+# =====================================================
+# INVESTOR PORTFOLIO (FIXED JOIN)
+# =====================================================
 
 @app.route('/investor/portfolio')
 def investor_portfolio():
-    investments = investments_col.find({
+    investments = list(investments_col.find({
         "investor_id": session['user_id']
-    })
+    }))
+
+    for inv in investments:
+        startup = startups_col.find_one({"_id": ObjectId(inv["startup_id"])})
+        inv["startup_title"] = startup["title"] if startup else "Unknown"
+
     return render_template(
         "investor_portfolio.html",
         investments=investments
     )
-@app.route('/investor/insights')
-def market_insights():
-    pipeline = [
-        {"$group": {"_id": "$domain", "count": {"$sum": 1}}}
-    ]
-    domain_stats = startups_col.aggregate(pipeline)
-    return render_template(
-        "market_insights.html",
-        stats=domain_stats
-)
+
+
+# =====================================================
+# ANALYTICS (REAL COUNTS)
+# =====================================================
+
 @app.route('/analytics')
 def analytics():
     if 'user_id' not in session:
         return redirect('/login')
 
-    role = session['role']
-    user_id = session['user_id']
-
-    analytics_data = {}
-
-    # ---------- FOUNDER ANALYTICS ----------
-    if role == "Founder":
-        analytics_data = {
-            "team_growth": [2, 4, 6, 8],
-            "investor_interest": [1, 3, 5, 7],
-            "pitch_performance": [60, 70, 85, 90]
-        }
-
-    # ---------- INVESTOR ANALYTICS ----------
-    elif role == "Investor":
-        analytics_data = {
-            "portfolio_value": [10, 15, 20, 30],
-            "risk_analysis": [30, 25, 20, 15],
-            "sector_trends": [40, 30, 20, 10]
-        }
-
-    # ---------- TALENT ANALYTICS ----------
-    elif role == "Talent":
-        analytics_data = {
-            "skill_demand": [80, 70, 60, 90],
-            "active_opportunities": [3, 6, 9, 12],
-            "profile_visibility": [50, 65, 75, 90]
-        }
+    data = {
+        "startups": startups_col.count_documents({}),
+        "users": users_col.count_documents({}),
+        "investments": investments_col.count_documents({})
+    }
 
     return render_template(
         "analytics.html",
-        role=role,
-        analytics=analytics_data
+        analytics=data,
+        role=session['role']
     )
 
-@app.route('/dashboard')
-def dashboard():
-    if 'user_id' not in session:
-        return redirect(url_for('login'))
-    
-   
 
+# =====================================================
+# AI MATCH
+# =====================================================
 
-    role = session['role']
-    name = session['name']
-
-    stats = {}
-
-    if role == "Founder":
-        stats = {
-            "startups": startups_col.count_documents({"founder_id": session['user_id']}),
-            "funding": funding_requests_col.count_documents({"founder_id": session['user_id']}),
-            "roi": "_"
-        }
-
-    elif role == "Talent":
-        stats = {
-            "applications": applications_col.count_documents({"talent_id": session['user_id']}),
-            "roi": "_"
-        }
-
-    elif role == "Investor":
-        stats = {
-            "funding": funding_requests_col.count_documents({"investor_id": session['user_id']}),
-            "roi": "18%"
-        }
-
-    chart_data = [
-        stats.get("startups", 0),
-        stats.get("funding", 0),
-        20
-    ]
-
-    return render_template(
-        "dashboard.html",
-        name=name,
-        role=role,
-        stats=stats,
-        chart_data=chart_data
-    )
 @app.route('/ai/investor-match/<startup_id>')
 def investor_match(startup_id):
     startup = startups_col.find_one({"_id": ObjectId(startup_id)})
-    investors = list(users_col.find())
+    investors = list(users_col.find({"role": "Investor"}))
 
     matches = match_startup_investors(
         startup["description"],
@@ -379,13 +360,15 @@ def investor_match(startup_id):
         startup=startup,
         matches=matches
     )
+
+
 @app.route('/ai/talent-match/<startup_id>')
 def talent_match(startup_id):
     startup = startups_col.find_one({"_id": ObjectId(startup_id)})
-    talents = list(users_col.find())
+    talents = list(users_col.find({"role": "Talent"}))
 
     matches = match_talent(
-        startup["skills_required"],
+        startup.get("description", ""),
         talents
     )
 
@@ -394,22 +377,11 @@ def talent_match(startup_id):
         startup=startup,
         matches=matches
     )
-@app.route('/feedback', methods=['POST'])
-def feedback():
-    feedback_col.insert_one({
-        "startup_id": request.form["startup_id"],
-        "user_id": request.form["user_id"],
-        "rating": int(request.form["rating"])
-    })
-    return redirect('/dashboard')
 
+
+# =====================================================
+# RUN APP
+# =====================================================
 
 if __name__ == "__main__":
-    app.run(
-        host="127.0.0.1",
-        port=5000,
-        debug=True,
-        threaded=False,
-        use_reloader=False
-    )
-
+    app.run(debug=True)

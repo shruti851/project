@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Applications</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gradient-to-br from-slate-900 via-gray-900 to-slate-800 text-white min-h-screen p-10">
+
+<div class="max-w-5xl mx-auto">
+
+    <h1 class="text-4xl font-bold mb-10 text-blue-400">
+        📄 My Applications
+    </h1>
+
+    {% if applications and applications|length > 0 %}
+        <div class="grid gap-6">
+
+            {% for app in applications %}
+            <div class="bg-slate-800 p-6 rounded-xl border border-slate-700 shadow-lg">
+
+                <h2 class="text-2xl font-semibold text-purple-400">
+                    {{ app.role.title if app.role else "Role Not Found" }}
+                </h2>
+
+                <p class="text-gray-400 mt-2">
+                    Startup:
+                    <span class="text-white">
+                        {{ app.startup.name if app.startup else "Startup Not Found" }}
+                    </span>
+                </p>
+
+                <div class="mt-4">
+                    <span class="px-4 py-1 rounded-full text-sm font-semibold
+                        {% if app.status == 'Approved' %}
+                            bg-green-600
+                        {% elif app.status == 'Rejected' %}
+                            bg-red-600
+                        {% else %}
+                            bg-yellow-500
+                        {% endif %}
+                    ">
+                        {{ app.status }}
+                    </span>
+                </div>
+
+            </div>
+            {% endfor %}
+
+        </div>
+    {% else %}
+        <div class="bg-slate-800 p-8 rounded-xl border border-slate-700 text-center">
+            <p class="text-gray-400 text-lg">
+                You haven't applied to any roles yet.
+            </p>
+        </div>
+    {% endif %}
+
+    <div class="mt-12">
+        <a href="/dashboard"
+           class="px-6 py-2 bg-blue-600 rounded-lg hover:bg-blue-700 transition">
+            ← Back to Dashboard
+        </a>
+    </div>
+
+</div>
+
+</body>
+</html>

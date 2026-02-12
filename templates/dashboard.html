@@ -3,17 +3,19 @@
 <head>
   <meta charset="UTF-8">
   <title>Dashboard | AI Startup Ecosystem</title>
+  <script>
+  tailwind.config = {
+    darkMode: 'class'
+  }
+</script>
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
 <body class="min-h-screen bg-gradient-to-br from-slate-100 via-gray-100 to-slate-200">
 
-<!-- BACKGROUND DECOR -->
-<div class="absolute top-20 left-20 w-72 h-72 bg-blue-400 rounded-full blur-3xl opacity-20"></div>
-<div class="absolute bottom-24 right-24 w-72 h-72 bg-purple-400 rounded-full blur-3xl opacity-20"></div>
-
 <!-- NAVBAR -->
-<nav class="relative z-10 bg-white/70 backdrop-blur-lg shadow-md px-6 py-4 flex justify-between items-center">
+<nav class="bg-white/80 backdrop-blur-lg shadow-md px-6 py-4 flex justify-between items-center">
   <h1 class="text-xl font-bold text-blue-700">
     🚀 AI-Powered Startup Ecosystem
   </h1>
@@ -24,49 +26,46 @@
     </span>
 
     <a href="/logout"
-       class="px-4 py-2 bg-red-500 text-white rounded-lg
-              hover:bg-red-600 transition">
+       class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition">
       Logout
     </a>
   </div>
 </nav>
 
-
-<!-- MAIN -->
-<div class="relative z-10 max-w-7xl mx-auto px-6 py-10">
-  <div class="ml-24">
-
+<!-- MAIN CONTENT -->
+<div class="max-w-7xl mx-auto px-6 py-10">
 
   <!-- HEADER -->
   <div class="mb-10">
     <h2 class="text-4xl font-extrabold text-gray-800">
-      Welcome, {{ name }} 
+      Welcome, {{ name }}
     </h2>
     <p class="text-gray-600 mt-2 text-lg">
       Your personalized control center
     </p>
   </div>
-  <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-10">
 
-  <div class="stat-card">
-    <h4>Total Startups</h4>
-    <span>{{ stats.startups or 0 }}</span>
+  <!-- STATS -->
+  <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-12">
+
+    <div class="stat-card">
+      <h4>Total Startups</h4>
+      <span>{{ stats.startups if stats and stats.startups is not none else 0 }}</span>
+    </div>
+
+    <div class="stat-card">
+      <h4>Total Funding Requests</h4>
+      <span>{{ stats.funding if stats and stats.funding is not none else 0 }}</span>
+    </div>
+
+    <div class="stat-card">
+      <h4>Total Users</h4>
+      <span>{{ stats.users if stats and stats.users is not none else 0 }}</span>
+    </div>
+
   </div>
 
-  <div class="stat-card">
-    <h4>Funding Requests</h4>
-    <span>{{ stats.funding or stats.applications or 0 }}</span>
-  </div>
-
-  <div class="stat-card">
-    <h4>Performance</h4>
-    <span>{{ stats.roi or "—" }}</span>
-  </div>
-
-</div>
-
-
-  <!-- DASHBOARD GRID -->
+  <!-- ROLE BASED ACTION CARDS -->
   <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
 
     {% if role == "Founder" %}
@@ -83,7 +82,7 @@
     </a>
 
     <a href="/funding-requests" class="glass-card hover-border-green">
-      <span class="card-icon bg-green-600"></span>
+      <span class="card-icon bg-green-600">💰</span>
       <h3>Funding Requests</h3>
       <p>Review investor offers</p>
     </a>
@@ -129,39 +128,29 @@
     </a>
     {% endif %}
 
-  <!-- SIDEBAR -->
-<div class="fixed left-6 top-1/2 -translate-y-1/2 z-20">
-  <a href="/analytics"
-     class="group flex items-center gap-3 bg-white px-4 py-3 rounded-xl shadow-lg border
-            hover:bg-indigo-50 transition-all">
+  </div>
 
-    <span class="text-xl">📊</span>
+  <!-- ANALYTICS CHART -->
+  <div class="bg-white rounded-xl shadow-lg p-6 mt-16">
+    <h3 class="text-xl font-bold mb-4 text-gray-800">
+      📊 Platform Analytics
+    </h3>
+    <canvas id="analyticsChart"></canvas>
+  </div>
 
-    <span class="hidden group-hover:block text-sm font-semibold text-indigo-700">
-      Analytics & Insights
-    </span>
-  </a>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-<div class="bg-white rounded-xl shadow-lg p-6 mt-12">
-  <h3 class="text-xl font-bold mb-4 text-gray-800">
-    📊 Platform Analytics
-  </h3>
-  <canvas id="analyticsChart"></canvas>
-</div>
-
+<!-- DYNAMIC CHART SCRIPT -->
 <script>
 const ctx = document.getElementById('analyticsChart');
 
 new Chart(ctx, {
   type: 'bar',
   data: {
-    labels: ['Startups', 'Funding', 'Users'],
+    labels: {{ chart_labels | tojson }},
     datasets: [{
-      label: 'Growth Overview',
-      data: [12, 8, 20],
+      label: 'Dashboard Overview',
+      data: {{ chart_data | tojson }},
       backgroundColor: [
         'rgba(59,130,246,0.7)',
         'rgba(34,197,94,0.7)',
@@ -180,7 +169,7 @@ new Chart(ctx, {
 </script>
 
 
-<!-- EXTRA CSS -->
+<!-- STYLES -->
 <style>
 .glass-card {
   background: rgba(255,255,255,0.75);
@@ -190,25 +179,10 @@ new Chart(ctx, {
   border: 1px solid rgba(255,255,255,0.4);
   box-shadow: 0 20px 35px rgba(0,0,0,0.08);
   transition: all 0.35s ease;
-  position: relative;
-  overflow: hidden;
-}
-
-.glass-card::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(120deg, transparent, rgba(255,255,255,0.6), transparent);
-  opacity: 0;
-  transition: opacity 0.3s;
-}
-
-.glass-card:hover::before {
-  opacity: 1;
 }
 
 .glass-card:hover {
-  transform: translateY(-10px) scale(1.02);
+  transform: translateY(-8px) scale(1.02);
 }
 
 .glass-card h3 {
@@ -233,16 +207,8 @@ new Chart(ctx, {
   justify-content: center;
   color: white;
   font-size: 1.6rem;
-  box-shadow: 0 10px 20px rgba(0,0,0,0.2);
 }
 
-/* Hover Borders */
-.hover-border-blue:hover { border-color: #3b82f6; }
-.hover-border-indigo:hover { border-color: #6366f1; }
-.hover-border-green:hover { border-color: #22c55e; }
-.hover-border-yellow:hover { border-color: #eab308; }
-.hover-border-purple:hover { border-color: #a855f7; }
-.hover-border-pink:hover { border-color: #ec4899; }
 .stat-card {
   background: linear-gradient(135deg, #ffffff, #f9fafb);
   border-radius: 1.2rem;
@@ -265,6 +231,13 @@ new Chart(ctx, {
   font-weight: 800;
   color: #2563eb;
 }
+
+.hover-border-blue:hover { border-color: #3b82f6; }
+.hover-border-indigo:hover { border-color: #6366f1; }
+.hover-border-green:hover { border-color: #22c55e; }
+.hover-border-yellow:hover { border-color: #eab308; }
+.hover-border-purple:hover { border-color: #a855f7; }
+.hover-border-pink:hover { border-color: #ec4899; }
 
 </style>
 

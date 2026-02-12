@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <title>{% block title %}AI Startup Ecosystem{% endblock %}</title>
+
+  <script>
+    tailwind.config = { darkMode: 'class' }
+  </script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body class="bg-gray-950 text-gray-200 min-h-screen flex">
+
+<!-- SIDEBAR -->
+<aside class="w-64 bg-gray-900 border-r border-gray-800 p-6 hidden md:flex flex-col">
+
+  <h1 class="text-2xl font-bold text-blue-400 mb-10">
+    🚀 AI Ecosystem
+  </h1>
+
+  <nav class="space-y-3 text-sm">
+
+    <a href="/dashboard" class="nav-link">Dashboard</a>
+    <a href="/view_roles" class="nav-link">Roles</a>
+    <a href="/view_startups" class="nav-link">Startups</a>
+    <a href="/investor_match" class="nav-link">Investor Match</a>
+    <a href="/analytics" class="nav-link">Analytics</a>
+    <a href="/market_insights" class="nav-link">Market Insights</a>
+    <a href="/logout" class="text-red-400 hover:bg-gray-800 px-4 py-2 rounded-lg block transition">
+      Logout
+    </a>
+
+  </nav>
+
+</aside>
+
+<!-- MAIN -->
+<div class="flex-1 p-10">
+
+  <div class="mb-10">
+    <h2 class="text-2xl font-bold">
+      {% block page_title %}{% endblock %}
+    </h2>
+    <p class="text-gray-400 text-sm mt-1">
+      {% block page_subtitle %}{% endblock %}
+    </p>
+  </div>
+
+  {% block content %}{% endblock %}
+
+</div>
+
+<style>
+.nav-link {
+  display: block;
+  padding: 0.6rem 1rem;
+  border-radius: 0.75rem;
+  color: #d1d5db;
+  transition: all 0.3s ease;
+}
+
+.nav-link:hover {
+  background: #1f2937;
+  color: white;
+}
+
+.dark-card {
+  background: #111827;
+  border: 1px solid #1f2937;
+  border-radius: 1.5rem;
+  padding: 2rem;
+  box-shadow: 0 15px 40px rgba(0,0,0,0.5);
+}
+</style>
+
+</body>
+</html>
