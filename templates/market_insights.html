@@ -1,30 +1,67 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Market Insights</title>
-  <script>
-  tailwind.config = {
-    darkMode: 'class'
-  }
+<title>Market Insights</title>
+
+<script>
+tailwind.config = { darkMode: 'class' }
 </script>
-  <script src="https://cdn.tailwindcss.com"></script>
+
+<script src="https://cdn.tailwindcss.com"></script>
+
+<script>
+function toggleDark(){
+  document.documentElement.classList.toggle("dark");
+}
+</script>
+
 </head>
 
-<body class="bg-gray-100 p-6">
+<body class="p-6 min-h-screen
+bg-gray-100 dark:bg-gray-900
+transition-colors duration-300">
 
-<h2 class="text-3xl font-bold mb-6">📊 Market Insights</h2>
+<!-- Toggle -->
+<button onclick="toggleDark()"
+class="fixed top-4 right-4 px-3 py-1 rounded
+bg-gray-800 text-white
+dark:bg-yellow-400 dark:text-black shadow">
+🌙
+</button>
 
-<div class="bg-white p-6 rounded shadow">
-  <h3 class="text-xl font-semibold mb-4">Popular Startup Domains</h3>
+<h2 class="text-3xl font-bold mb-6
+text-gray-800 dark:text-white">
+📊 Market Insights
+</h2>
 
-  {% for item in stats %}
-  <div class="flex justify-between border-b py-2">
-    <span>{{ item._id }}</span>
-    <span class="font-bold">{{ item.count }}</span>
-  </div>
-  {% else %}
-  <p>No data available.</p>
-  {% endfor %}
+<div class="bg-white dark:bg-gray-800
+p-6 rounded shadow transition-colors">
+
+<h3 class="text-xl font-semibold mb-4
+text-gray-700 dark:text-gray-200">
+Popular Startup Domains
+</h3>
+
+{% for item in stats %}
+<div class="flex justify-between border-b py-2
+border-gray-200 dark:border-gray-700">
+
+<span class="text-gray-700 dark:text-gray-300">
+{{ item._id }}
+</span>
+
+<span class="font-bold text-blue-600 dark:text-blue-400">
+{{ item.count }}
+</span>
+
+</div>
+
+{% else %}
+<p class="text-gray-500 dark:text-gray-400">
+No data available.
+</p>
+{% endfor %}
+
 </div>
 
 </body>

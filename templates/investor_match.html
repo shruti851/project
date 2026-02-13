@@ -1,12 +1,47 @@
-<h2 class="text-2xl font-bold">Investor Matches</h2>
+{% extends "base.html" %}
 
-<table class="mt-4 w-full border">
-<tr><th>Name</th><th>Match %</th></tr>
+{% block title %}
+Investor Matches
+{% endblock %}
+
+{% block page_title %}
+Investor Matches
+{% endblock %}
+
+{% block page_subtitle %}
+AI-powered compatibility results
+{% endblock %}
+
+{% block content %}
+
+<div class="dark-card">
+
+<table class="w-full border-collapse">
+
+<thead>
+<tr class="bg-gray-200 dark:bg-gray-800">
+<th class="p-3 text-left">Name</th>
+<th class="p-3 text-left">Match %</th>
+</tr>
+</thead>
+
+<tbody>
 
 {% for m in matches %}
-<tr>
-  <td>{{ m.name }}</td>
-  <td>{{ m.score }}%</td>
+<tr class="border-t border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 transition">
+
+<td class="p-3">{{ m.name }}</td>
+<td class="p-3 font-semibold text-blue-600 dark:text-blue-400">
+{{ m.score }}%
+</td>
+
 </tr>
 {% endfor %}
+
+</tbody>
+
 </table>
+
+</div>
+
+{% endblock %}

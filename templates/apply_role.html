@@ -1,27 +1,52 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>Apply Role</title>
-  <script>
-  tailwind.config = {
-    darkMode: 'class'
-  }
-</script>
-  <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-gray-100">
+{% extends "base.html" %}
 
-<div class="max-w-xl mx-auto mt-10 bg-white p-6 rounded shadow">
-  <h2 class="text-xl font-bold mb-4">Apply for {{ role.role_name }}</h2>
+{% block title %}
+Apply Role
+{% endblock %}
 
-  <form method="POST">
-    <input name="talent_name" placeholder="Your Name" class="w-full p-2 mb-3 border rounded" required>
-    <input name="email" type="email" placeholder="Email" class="w-full p-2 mb-3 border rounded" required>
-    <input name="skills" placeholder="Your Skills" class="w-full p-2 mb-4 border rounded" required>
+{% block page_title %}
+Apply for {{ role.role_name }}
+{% endblock %}
 
-    <button class="bg-blue-600 text-white w-full p-2 rounded">Submit Application</button>
-  </form>
+{% block page_subtitle %}
+Submit your application details
+{% endblock %}
+
+{% block content %}
+
+<div class="max-w-xl mx-auto dark-card">
+
+<form method="POST">
+
+<input
+name="talent_name"
+placeholder="Your Name"
+class="w-full p-3 mb-3 border rounded bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-700"
+required
+>
+
+<input
+name="email"
+type="email"
+placeholder="Email"
+class="w-full p-3 mb-3 border rounded bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-700"
+required
+>
+
+<input
+name="skills"
+placeholder="Your Skills"
+class="w-full p-3 mb-4 border rounded bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-700"
+required
+>
+
+<button
+class="bg-blue-600 hover:bg-blue-700 text-white w-full p-3 rounded transition">
+Submit Application
+</button>
+
+</form>
+
 </div>
 
-</body>
-</html>
+{% endblock %}

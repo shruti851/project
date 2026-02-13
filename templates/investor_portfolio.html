@@ -1,32 +1,56 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>Investment Portfolio</title>
-  <script>
-  tailwind.config = {
-    darkMode: 'class'
-  }
-</script>
-  <script src="https://cdn.tailwindcss.com"></script>
-</head>
+{% extends "base.html" %}
 
-<body class="bg-gray-100 p-6">
+{% block title %}
+Investment Portfolio
+{% endblock %}
 
-<h2 class="text-3xl font-bold mb-6">💼 Investment Portfolio</h2>
+{% block page_title %}
+💼 Investment Portfolio
+{% endblock %}
 
-<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-  {% for inv in investments %}
-  <div class="bg-white p-4 rounded shadow">
-    <p><b>Startup ID:</b> {{ inv.startup_id }}</p>
-    <p><b>Amount:</b> ₹{{ inv.amount }}</p>
-    <p><b>Status:</b>
-      <span class="text-blue-600">{{ inv.status }}</span>
-    </p>
-  </div>
-  {% else %}
-  <p>No investments yet.</p>
-  {% endfor %}
+{% block page_subtitle %}
+Track your startup investments
+{% endblock %}
+
+{% block content %}
+
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+{% for inv in investments %}
+
+<div class="dark-card hover:scale-[1.02] transition">
+
+<p class="mb-2">
+<b>Startup ID:</b>
+<span class="text-gray-700 dark:text-gray-300">
+{{ inv.startup_id }}
+</span>
+</p>
+
+<p class="mb-2">
+<b>Amount:</b>
+<span class="text-green-600 font-semibold">
+₹{{ inv.amount }}
+</span>
+</p>
+
+<p>
+<b>Status:</b>
+<span class="text-blue-600 dark:text-blue-400 font-semibold">
+{{ inv.status }}
+</span>
+</p>
+
 </div>
 
-</body>
-</html>
+{% else %}
+
+<div class="col-span-full text-center text-gray-600 dark:text-gray-400 py-10">
+No investments yet.
+</div>
+
+{% endfor %}
+
+</div>
+
+{% endblock %}

@@ -1,107 +1,103 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>AI-Powered Startup Ecosystem</title>
-  <script>
-  tailwind.config = {
-    darkMode: 'class'
-  }
-</script>
-  <script src="https://cdn.tailwindcss.com"></script>
-</head>
+{% extends "base.html" %}
 
-<body class="bg-gray-100 text-gray-800">
+{% block title %}
+AI-Powered Startup Ecosystem
+{% endblock %}
 
-<!-- NAVBAR -->
-<nav class="bg-blue-700 text-white px-8 py-4 flex justify-between items-center">
-  <h1 class="text-xl font-bold">Startup Ecosystem</h1>
-  <div class="space-x-4">
-    <a href="/login" class="hover:underline">Login</a>
-    <a href="/register" class="bg-white text-blue-700 px-4 py-2 rounded font-semibold">
-      Register
-    </a>
-  </div>
-</nav>
+{% block page_title %}
+Connect. Build. Fund. Grow.
+{% endblock %}
 
-<!-- HERO SECTION -->
-<section class="bg-white py-20">
-  <div class="max-w-6xl mx-auto px-6 text-center">
-    <h2 class="text-4xl font-bold mb-4">
-      Connect. Build. Fund. Grow.
-    </h2>
-    <p class="text-gray-600 text-lg mb-8">
-      An AI-powered platform connecting founders, talent, and investors in one ecosystem.
-    </p>
-    <a href="/register"
-       class="bg-blue-700 text-white px-8 py-3 rounded-lg text-lg hover:bg-blue-800">
-      Get Started
-    </a>
-  </div>
+{% block page_subtitle %}
+An AI-powered platform connecting founders, talent, and investors
+{% endblock %}
+
+{% block content %}
+
+<!-- HERO -->
+<section class="dark-card text-center mb-12">
+
+<h2 class="text-4xl font-bold mb-4">
+Connect. Build. Fund. Grow.
+</h2>
+
+<p class="text-gray-600 dark:text-gray-400 text-lg mb-8">
+An AI-powered platform connecting founders, talent, and investors in one ecosystem.
+</p>
+
+<a href="/register"
+class="bg-blue-700 hover:bg-blue-800 text-white px-8 py-3 rounded-lg text-lg transition">
+Get Started
+</a>
+
 </section>
 
 <!-- FEATURES -->
-<section class="py-16">
-  <div class="max-w-6xl mx-auto px-6">
-    <h3 class="text-3xl font-bold text-center mb-12">Platform Features</h3>
+<section class="mb-12">
 
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+<h3 class="text-3xl font-bold text-center mb-8">
+Platform Features
+</h3>
 
-      <div class="bg-white p-6 rounded-lg shadow hover:shadow-lg">
-        <h4 class="text-xl font-semibold mb-2">🚀 Startup Pitch</h4>
-        <p class="text-gray-600">
-          Founders can pitch ideas, upload documents, and manage startup progress.
-        </p>
-      </div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
 
-      <div class="bg-white p-6 rounded-lg shadow hover:shadow-lg">
-        <h4 class="text-xl font-semibold mb-2">🤖 AI Matching</h4>
-        <p class="text-gray-600">
-          AI matches talent and investors based on skills, domain, and preferences.
-        </p>
-      </div>
+<div class="dark-card">
+<h4 class="text-xl font-semibold mb-2">🚀 Startup Pitch</h4>
+<p class="text-gray-600 dark:text-gray-400">
+Founders pitch ideas and manage startup growth.
+</p>
+</div>
 
-      <div class="bg-white p-6 rounded-lg shadow hover:shadow-lg">
-        <h4 class="text-xl font-semibold mb-2">💼 Funding & Hiring</h4>
-        <p class="text-gray-600">
-          Investors fund startups and founders hire skilled talent easily.
-        </p>
-      </div>
+<div class="dark-card">
+<h4 class="text-xl font-semibold mb-2">🤖 AI Matching</h4>
+<p class="text-gray-600 dark:text-gray-400">
+AI matches talent and investors intelligently.
+</p>
+</div>
 
-    </div>
-  </div>
+<div class="dark-card">
+<h4 class="text-xl font-semibold mb-2">💼 Funding & Hiring</h4>
+<p class="text-gray-600 dark:text-gray-400">
+Investors fund startups while founders hire talent.
+</p>
+</div>
+
+</div>
+
 </section>
 
 <!-- ROLES -->
-<section class="bg-blue-700 py-16 text-white">
-  <div class="max-w-6xl mx-auto px-6 text-center">
-    <h3 class="text-3xl font-bold mb-10">Who Can Use This Platform?</h3>
+<section class="dark-card text-center">
 
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+<h3 class="text-3xl font-bold mb-8">
+Who Can Use This Platform?
+</h3>
 
-      <div class="bg-blue-600 p-6 rounded-lg">
-        <h4 class="text-xl font-semibold mb-2">Founder</h4>
-        <p>Pitch ideas, build teams, and raise funding.</p>
-      </div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
 
-      <div class="bg-blue-600 p-6 rounded-lg">
-        <h4 class="text-xl font-semibold mb-2">Talent</h4>
-        <p>Apply to startups and get AI-matched roles.</p>
-      </div>
+<div>
+<h4 class="text-xl font-semibold mb-2">Founder</h4>
+<p class="text-gray-600 dark:text-gray-400">
+Pitch ideas, build teams, raise funding.
+</p>
+</div>
 
-      <div class="bg-blue-600 p-6 rounded-lg">
-        <h4 class="text-xl font-semibold mb-2">Investor</h4>
-        <p>Discover startups and track investments.</p>
-      </div>
+<div>
+<h4 class="text-xl font-semibold mb-2">Talent</h4>
+<p class="text-gray-600 dark:text-gray-400">
+Apply to startups with AI matching.
+</p>
+</div>
 
-    </div>
-  </div>
+<div>
+<h4 class="text-xl font-semibold mb-2">Investor</h4>
+<p class="text-gray-600 dark:text-gray-400">
+Discover and invest in startups.
+</p>
+</div>
+
+</div>
+
 </section>
 
-<!-- FOOTER -->
-<footer class="bg-gray-900 text-gray-300 py-6 text-center">
-  <p>© 2026 AI-Powered Startup Ecosystem | College Project</p>
-</footer>
-
-</body>
-</html>
+{% endblock %}

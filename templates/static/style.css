@@ -1,0 +1,163 @@
+/* ============================= */
+/* GLOBAL DARK THEME */
+/* ============================= */
+
+body {
+    background-color: #121212;
+    color: #e4e4e4;
+    font-family: 'Segoe UI', sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+/* Links */
+a {
+    color: #4da6ff;
+    text-decoration: none;
+}
+
+a:hover {
+    color: #82cfff;
+}
+
+/* ============================= */
+/* NAVBAR */
+/* ============================= */
+
+.navbar {
+    background-color: #1e1e1e;
+    padding: 15px 30px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+}
+
+.navbar a {
+    color: #ffffff;
+    margin-right: 20px;
+    font-weight: 500;
+}
+
+/* ============================= */
+/* CONTAINER */
+/* ============================= */
+
+.container {
+    padding: 40px;
+}
+
+/* ============================= */
+/* CARDS */
+/* ============================= */
+
+.card {
+    background-color: #1e1e1e;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.6);
+}
+
+.card h3 {
+    margin-top: 0;
+}
+
+/* ============================= */
+/* BUTTONS */
+/* ============================= */
+
+button, .btn {
+    background-color: #4da6ff;
+    color: white;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: 0.3s ease;
+}
+
+button:hover, .btn:hover {
+    background-color: #2d8cff;
+}
+
+/* ============================= */
+/* FORMS */
+/* ============================= */
+
+input, textarea, select {
+    width: 100%;
+    padding: 10px;
+    margin-top: 8px;
+    margin-bottom: 15px;
+    background-color: #2a2a2a;
+    border: 1px solid #333;
+    color: white;
+    border-radius: 6px;
+}
+
+input:focus, textarea:focus {
+    outline: none;
+    border: 1px solid #4da6ff;
+}
+
+/* ============================= */
+/* TABLE */
+/* ============================= */
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+table th, table td {
+    padding: 12px;
+    border-bottom: 1px solid #333;
+}
+
+table th {
+    background-color: #1e1e1e;
+}
+
+/* ============================= */
+/* DASHBOARD STATS */
+/* ============================= */
+
+.stat-box {
+    background-color: #1e1e1e;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    margin-bottom: 20px;
+    transition: 0.3s;
+}
+
+.stat-box:hover {
+    transform: translateY(-5px);
+    background-color: #252525;
+}
+
+.stat-box h2 {
+    margin: 0;
+    color: #4da6ff;
+}
+
+/* ============================= */
+/* AI MATCH SCORE STYLE */
+/* ============================= */
+
+.match-score {
+    font-weight: bold;
+    color: #00e676;
+}
+
+/* ============================= */
+/* FOOTER */
+/* ============================= */
+
+footer {
+    background-color: #1e1e1e;
+    text-align: center;
+    padding: 15px;
+    margin-top: 50px;
+    font-size: 14px;
+    color: #aaa;
+}

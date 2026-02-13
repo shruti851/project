@@ -1,38 +1,120 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Funding Requests</title>
-  <script>
-  tailwind.config = {
-    darkMode: 'class'
-  }
+<title>Funding Requests</title>
+
+<script>
+tailwind.config = { darkMode: 'class' }
 </script>
-  <script src="https://cdn.tailwindcss.com"></script>
+
+<script src="https://cdn.tailwindcss.com"></script>
+
+<script>
+if(localStorage.theme === "dark"){
+  document.documentElement.classList.add("dark");
+}
+
+function toggleTheme(){
+  document.documentElement.classList.toggle("dark");
+  localStorage.theme =
+    document.documentElement.classList.contains("dark")
+      ? "dark" : "light";
+}
+</script>
+
 </head>
-<body class="bg-gray-100">
 
-<div class="max-w-4xl mx-auto mt-8">
-  <h2 class="text-2xl font-bold mb-4">Funding Offers</h2>
+<body class="min-h-screen transition duration-300
+bg-gray-100 dark:bg-gray-950
+text-gray-800 dark:text-gray-200">
 
-  {% for r in requests %}
-  <div class="bg-white p-4 mb-3 rounded shadow">
-    <p><strong>Investor:</strong> {{ r.investor_name }}</p>
-    <p><strong>Amount:</strong> {{ r.amount }}</p>
-    <p><strong>Equity:</strong> {{ r.equity }}%</p>
-    <p><strong>Status:</strong> {{ r.status }}</p>
+<!-- NAVBAR -->
+<nav class="bg-blue-700 text-white p-4 flex justify-between items-center">
 
-    {% if r.status == "Pending" %}
-      <a href="/funding-decision/{{ r._id }}/Accepted"
-         class="bg-green-600 text-white px-3 py-1 rounded mr-2">
-         Accept
-      </a>
-      <a href="/funding-decision/{{ r._id }}/Rejected"
-         class="bg-red-600 text-white px-3 py-1 rounded">
-         Reject
-      </a>
-    {% endif %}
-  </div>
-  {% endfor %}
+<span class="font-semibold text-lg">
+💰 Funding Offers
+</span>
+
+<button onclick="toggleTheme()"
+class="bg-white text-black px-3 py-1 rounded
+dark:bg-gray-800 dark:text-white">
+🌙
+</button>
+
+</nav>
+
+<!-- CONTENT -->
+<div class="max-w-4xl mx-auto mt-8 px-4">
+
+{% if requests %}
+
+{% for r in requests %}
+<div class="bg-white dark:bg-gray-900
+p-5 mb-4 rounded-xl shadow
+border border-gray-200 dark:border-gray-800
+transition hover:scale-[1.01]">
+
+<div class="grid md:grid-cols-2 gap-2">
+
+<p><strong>Investor:</strong> {{ r.investor_name }}</p>
+
+<p><strong>Amount:</strong> {{ r.amount }}</p>
+
+<p><strong>Equity:</strong> {{ r.equity }}%</p>
+
+<p>
+<strong>Status:</strong>
+
+<span class="px-3 py-1 rounded-full text-sm font-semibold
+
+{% if r.status == 'Accepted' %}
+bg-green-500 text-white
+{% elif r.status == 'Rejected' %}
+bg-red-500 text-white
+{% else %}
+bg-yellow-500 text-black
+{% endif %}">
+
+{{ r.status }}
+
+</span>
+
+</p>
+
+</div>
+
+{% if r.status == "Pending" %}
+<div class="mt-4 flex gap-3">
+
+<a href="/funding-decision/{{ r._id }}/Accepted"
+class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded transition">
+✔ Accept
+</a>
+
+<a href="/funding-decision/{{ r._id }}/Rejected"
+class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded transition">
+✖ Reject
+</a>
+
+</div>
+{% endif %}
+
+</div>
+{% endfor %}
+
+{% else %}
+
+<div class="bg-white dark:bg-gray-900
+p-8 rounded-xl shadow text-center">
+
+<p class="text-gray-500 dark:text-gray-400">
+No funding requests available.
+</p>
+
+</div>
+
+{% endif %}
+
 </div>
 
 </body>

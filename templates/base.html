@@ -1,79 +1,193 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>{% block title %}AI Startup Ecosystem{% endblock %}</title>
+<meta charset="UTF-8">
 
-  <script>
-    tailwind.config = { darkMode: 'class' }
-  </script>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<title>{% block title %}AI Startup Ecosystem{% endblock %}</title>
+
+<!-- Prevent theme flash -->
+<script>
+if (
+  localStorage.theme === "dark" ||
+  (!("theme" in localStorage) &&
+   window.matchMedia("(prefers-color-scheme: dark)").matches)
+) {
+  document.documentElement.classList.add("dark");
+}
+</script>
+
+<script>
+tailwind.config = { darkMode: "class" }
+</script>
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 </head>
 
-<body class="bg-gray-950 text-gray-200 min-h-screen flex">
+<body class="bg-gray-100 dark:bg-gray-950 text-gray-800 dark:text-gray-200 min-h-screen flex transition-colors duration-300">
+
+<!-- MOBILE SIDEBAR OVERLAY -->
+<div id="overlay"
+class="fixed inset-0 bg-black/40 hidden z-30 md:hidden"
+onclick="toggleSidebar()"></div>
 
 <!-- SIDEBAR -->
-<aside class="w-64 bg-gray-900 border-r border-gray-800 p-6 hidden md:flex flex-col">
+<aside id="sidebar"
+class="fixed md:static z-40 w-64 h-full
+bg-white dark:bg-gray-900
+border-r border-gray-200 dark:border-gray-800
+p-6 flex flex-col
+transform -translate-x-full md:translate-x-0
+transition-transform duration-300">
 
-  <h1 class="text-2xl font-bold text-blue-400 mb-10">
-    🚀 AI Ecosystem
-  </h1>
+<h1 class="text-2xl font-bold text-blue-600 dark:text-blue-400 mb-8">
+🚀 AI Ecosystem
+</h1>
 
-  <nav class="space-y-3 text-sm">
+<nav class="space-y-2 text-sm overflow-y-auto">
 
-    <a href="/dashboard" class="nav-link">Dashboard</a>
-    <a href="/view_roles" class="nav-link">Roles</a>
-    <a href="/view_startups" class="nav-link">Startups</a>
-    <a href="/investor_match" class="nav-link">Investor Match</a>
-    <a href="/analytics" class="nav-link">Analytics</a>
-    <a href="/market_insights" class="nav-link">Market Insights</a>
-    <a href="/logout" class="text-red-400 hover:bg-gray-800 px-4 py-2 rounded-lg block transition">
-      Logout
-    </a>
+<a href="{{ url_for('dashboard') }}" class="nav-link">Dashboard</a>
+<a href="{{ url_for('home') }}" class="nav-link">Home</a>
 
-  </nav>
+<div class="nav-section">Startups</div>
+<a href="{{ url_for('pitch') }}" class="nav-link">Pitch Startup</a>
+<a href="{{ url_for('view_startups') }}" class="nav-link">My Startups</a>
+
+<div class="nav-section">Roles</div>
+<a href="{{ url_for('create_role') }}" class="nav-link">Create Role</a>
+<a href="{{ url_for('view_roles') }}" class="nav-link">View Roles</a>
+
+<div class="nav-section">Talent</div>
+<a href="{{ url_for('my_applications') }}" class="nav-link">My Applications</a>
+
+<div class="nav-section">Investor</div>
+<a href="{{ url_for('investor_view_startups') }}" class="nav-link">Browse Startups</a>
+<a href="{{ url_for('investor_portfolio') }}" class="nav-link">Portfolio</a>
+
+<div class="nav-section">Analytics</div>
+<a href="{{ url_for('analytics') }}" class="nav-link">Analytics</a>
+
+<a href="{{ url_for('logout') }}"
+class="text-red-500 hover:bg-red-100 dark:hover:bg-gray-800 px-4 py-2 rounded-lg block transition mt-4">
+Logout
+</a>
+
+</nav>
+
+
+<button onclick="toggleTheme()"
+class="mt-4 bg-gray-200 dark:bg-gray-800 hover:scale-105 transition p-2 rounded-lg text-sm">
+🌙 Toggle Theme
+</button>
 
 </aside>
 
-<!-- MAIN -->
-<div class="flex-1 p-10">
+<!-- MAIN CONTENT -->
+<div class="flex-1 flex flex-col">
 
-  <div class="mb-10">
-    <h2 class="text-2xl font-bold">
-      {% block page_title %}{% endblock %}
-    </h2>
-    <p class="text-gray-400 text-sm mt-1">
-      {% block page_subtitle %}{% endblock %}
-    </p>
-  </div>
+<!-- HEADER -->
+<header class="sticky top-0 bg-white dark:bg-gray-900
+border-b border-gray-200 dark:border-gray-800
+p-4 flex justify-between items-center z-20">
 
-  {% block content %}{% endblock %}
+<button onclick="toggleSidebar()"
+class="md:hidden bg-gray-200 dark:bg-gray-800 px-3 py-2 rounded">
+☰
+</button>
+
+<div>
+<h2 class="text-xl font-bold">
+{% block page_title %}{% endblock %}
+</h2>
+
+<p class="text-gray-500 dark:text-gray-400 text-sm">
+{% block page_subtitle %}{% endblock %}
+</p>
+</div>
+
+<button onclick="toggleTheme()"
+class="bg-gray-200 dark:bg-gray-800 px-4 py-2 rounded">
+🌙
+</button>
+
+</header>
+
+<!-- PAGE CONTENT -->
+<main class="p-6 md:p-10">
+
+{% block content %}{% endblock %}
+
+</main>
 
 </div>
 
+<!-- STYLES -->
 <style>
+
 .nav-link {
-  display: block;
-  padding: 0.6rem 1rem;
-  border-radius: 0.75rem;
-  color: #d1d5db;
-  transition: all 0.3s ease;
+display: block;
+padding: 0.6rem 1rem;
+border-radius: 0.75rem;
+transition: all 0.2s ease;
+color: #374151;
+}
+
+.dark .nav-link {
+color: #d1d5db;
 }
 
 .nav-link:hover {
-  background: #1f2937;
-  color: white;
+background: #e5e7eb;
+}
+
+.dark .nav-link:hover {
+background: #1f2937;
+color: white;
+}
+
+.nav-section {
+margin-top: 1rem;
+font-size: 0.75rem;
+text-transform: uppercase;
+color: #9ca3af;
+padding-left: 0.5rem;
 }
 
 .dark-card {
-  background: #111827;
-  border: 1px solid #1f2937;
-  border-radius: 1.5rem;
-  padding: 2rem;
-  box-shadow: 0 15px 40px rgba(0,0,0,0.5);
+background: white;
+border-radius: 1.5rem;
+padding: 2rem;
+box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+transition: all 0.3s ease;
 }
+
+.dark .dark-card {
+background: #111827;
+box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+
 </style>
+
+<!-- SCRIPTS -->
+<script>
+
+function toggleTheme() {
+const html = document.documentElement;
+html.classList.toggle("dark");
+localStorage.theme =
+html.classList.contains("dark") ? "dark" : "light";
+}
+
+function toggleSidebar() {
+const sidebar = document.getElementById("sidebar");
+const overlay = document.getElementById("overlay");
+
+sidebar.classList.toggle("-translate-x-full");
+overlay.classList.toggle("hidden");
+}
+
+</script>
 
 </body>
 </html>

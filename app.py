@@ -154,7 +154,7 @@ def pitch():
 # VIEW STARTUPS (FOUNDER)
 # =====================================================
 
-@app.route('/startups')
+@app.route('/view_startups')
 def view_startups():
     if 'user_id' not in session:
         return redirect(url_for('login'))
@@ -192,7 +192,7 @@ def create_role():
 # VIEW ROLES
 # =====================================================
 
-@app.route('/roles')
+@app.route('/view_roles')
 def view_roles():
     if 'user_id' not in session:
         return redirect(url_for('login'))
@@ -256,7 +256,7 @@ def my_applications():
     )
 
 @app.route('/ai/talent-match/<startup_id>')
-def talent_match(startup_id):
+def ai_talent_match(startup_id):
     startup = startups_col.find_one({"_id": ObjectId(startup_id)})
     talents = list(users_col.find({"role": "Talent"}))
 
@@ -362,26 +362,10 @@ def investor_match(startup_id):
     )
 
 
-@app.route('/ai/talent-match/<startup_id>')
-def talent_match(startup_id):
-    startup = startups_col.find_one({"_id": ObjectId(startup_id)})
-    talents = list(users_col.find({"role": "Talent"}))
-
-    matches = match_talent(
-        startup.get("description", ""),
-        talents
-    )
-
-    return render_template(
-        "talent_match.html",
-        startup=startup,
-        matches=matches
-    )
-
 
 # =====================================================
 # RUN APP
 # =====================================================
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True, use_reloader=False)

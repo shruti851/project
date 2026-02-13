@@ -2,29 +2,55 @@
 <html>
 <head>
   <title>Browse Startups</title>
-  <script>
-  tailwind.config = {
-    darkMode: 'class'
-  }
-</script>
-  <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-gray-100">
 
-<div class="max-w-4xl mx-auto mt-8">
-  <h2 class="text-2xl font-bold mb-4">Available Startups</h2>
+  <script>
+    tailwind.config = { darkMode: 'class' }
+  </script>
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <script>
+    function toggleDark() {
+      document.documentElement.classList.toggle("dark");
+    }
+  </script>
+</head>
+
+<body class="bg-gray-100 dark:bg-gray-900 min-h-screen transition-colors">
+
+<!-- Header -->
+<div class="max-w-4xl mx-auto mt-8 flex justify-between items-center">
+  <h2 class="text-2xl font-bold text-gray-800 dark:text-white">
+    Available Startups
+  </h2>
+
+  <button onclick="toggleDark()"
+          class="bg-gray-800 text-white px-3 py-1 rounded dark:bg-yellow-400 dark:text-black">
+    🌙 Toggle Mode
+  </button>
+</div>
+
+<!-- Startup Cards -->
+<div class="max-w-4xl mx-auto mt-4">
 
   {% for s in startups %}
-  <div class="bg-white p-4 mb-3 rounded shadow">
-    <h3 class="text-xl font-semibold">{{ s.title }}</h3>
-    <p>{{ s.description }}</p>
+  <div class="bg-white dark:bg-gray-800 p-4 mb-3 rounded shadow">
+
+    <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
+      {{ s.title }}
+    </h3>
+
+    <p class="text-gray-600 dark:text-gray-300">
+      {{ s.description }}
+    </p>
 
     <a href="/fund/{{ s._id }}"
-       class="inline-block mt-2 bg-blue-600 text-white px-4 py-1 rounded">
+       class="inline-block mt-2 bg-blue-600 text-white px-4 py-1 rounded hover:bg-blue-700">
        Fund Startup
     </a>
+
   </div>
   {% endfor %}
+
 </div>
 
 </body>
