@@ -1,36 +1,51 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>Fund Startup</title>
-  <script>
-  tailwind.config = {
-    darkMode: 'class'
-  }
-</script>
-  <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-gray-100">
+{% extends "base.html" %}
 
-<div class="max-w-xl mx-auto mt-10 bg-white p-6 rounded shadow">
-  <h2 class="text-2xl font-bold mb-4">
-    Fund {{ startup.title }}
-  </h2>
+{% block title %}
+Fund Startup
+{% endblock %}
 
-  <form method="POST">
-    <input name="investor_name" placeholder="Investor Name"
-           class="w-full p-2 mb-3 border rounded" required>
+{% block page_title %}
+Fund {{ startup.title }}
+{% endblock %}
 
-    <input name="amount" placeholder="Funding Amount"
-           class="w-full p-2 mb-3 border rounded" required>
+{% block page_subtitle %}
+Submit your investment offer
+{% endblock %}
 
-    <input name="equity" placeholder="Equity (%)"
-           class="w-full p-2 mb-4 border rounded" required>
+{% block content %}
 
-    <button class="bg-green-600 text-white w-full p-2 rounded">
-      Submit Offer
-    </button>
-  </form>
+<div class="max-w-xl mx-auto dark-card">
+
+<form method="POST">
+
+<input
+name="investor_name"
+placeholder="Investor Name"
+class="w-full p-3 mb-3 border rounded bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-700"
+required
+>
+
+<input
+name="amount"
+placeholder="Funding Amount"
+class="w-full p-3 mb-3 border rounded bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-700"
+required
+>
+
+<input
+name="equity"
+placeholder="Equity (%)"
+class="w-full p-3 mb-4 border rounded bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-700"
+required
+>
+
+<button
+class="bg-green-600 hover:bg-green-700 text-white w-full p-3 rounded transition">
+Submit Offer
+</button>
+
+</form>
+
 </div>
 
-</body>
-</html>
+{% endblock %}

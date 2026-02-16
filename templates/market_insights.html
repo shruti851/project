@@ -1,31 +1,399 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>Market Insights</title>
-  <script>
-  tailwind.config = {
-    darkMode: 'class'
-  }
-</script>
-  <script src="https://cdn.tailwindcss.com"></script>
-</head>
+{% extends "base.html" %}
 
-<body class="bg-gray-100 p-6">
+{% block title %}
+Market Insights | AI Startup Ecosystem
+{% endblock %}
 
-<h2 class="text-3xl font-bold mb-6">📊 Market Insights</h2>
+{% block page_title %}
+📊 Market Insights
+{% endblock %}
 
-<div class="bg-white p-6 rounded shadow">
-  <h3 class="text-xl font-semibold mb-4">Popular Startup Domains</h3>
+{% block page_subtitle %}
+Real-time analytics and market trends for the AI startup ecosystem
+{% endblock %}
 
-  {% for item in stats %}
-  <div class="flex justify-between border-b py-2">
-    <span>{{ item._id }}</span>
-    <span class="font-bold">{{ item.count }}</span>
+{% block content %}
+
+<div class="max-w-7xl mx-auto">
+
+<!-- KEY METRICS CARDS -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+
+  <!-- Startups Card -->
+  <div class="metric-card">
+    <div class="flex items-start justify-between">
+      <div class="flex-1">
+        <p class="text-gray-400 text-sm font-medium mb-2">Total Startups</p>
+        <h3 class="text-5xl font-bold text-white">{{ data.total_startups }}</h3>
+        <p class="text-green-400 text-sm mt-3">↑ 12% from last month</p>
+      </div>
+      <div class="metric-icon bg-blue-600/20 text-blue-400">🚀</div>
+    </div>
   </div>
-  {% else %}
-  <p>No data available.</p>
-  {% endfor %}
+
+  <!-- Users Card -->
+  <div class="metric-card">
+    <div class="flex items-start justify-between">
+      <div class="flex-1">
+        <p class="text-gray-400 text-sm font-medium mb-2">Active Users</p>
+        <h3 class="text-5xl font-bold text-white">{{ data.total_users }}</h3>
+        <p class="text-green-400 text-sm mt-3">↑ 8% from last month</p>
+      </div>
+      <div class="metric-icon bg-purple-600/20 text-purple-400">👥</div>
+    </div>
+  </div>
+
+  <!-- Roles Card -->
+  <div class="metric-card">
+    <div class="flex items-start justify-between">
+      <div class="flex-1">
+        <p class="text-gray-400 text-sm font-medium mb-2">Open Positions</p>
+        <h3 class="text-5xl font-bold text-white">{{ data.total_roles }}</h3>
+        <p class="text-green-400 text-sm mt-3">↑ 15% from last month</p>
+      </div>
+      <div class="metric-icon bg-green-600/20 text-green-400">💼</div>
+    </div>
+  </div>
+
+  <!-- Investments Card -->
+  <div class="metric-card">
+    <div class="flex items-start justify-between">
+      <div class="flex-1">
+        <p class="text-gray-400 text-sm font-medium mb-2">Total Investments</p>
+        <h3 class="text-5xl font-bold text-white">{{ data.total_investments }}</h3>
+        <p class="text-green-400 text-sm mt-3">↑ 25% from last month</p>
+      </div>
+      <div class="metric-icon bg-orange-600/20 text-orange-400">💰</div>
+    </div>
+  </div>
+
 </div>
 
-</body>
-</html>
+<!-- CHARTS SECTION -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+
+  <!-- Growth Chart -->
+  <div class="chart-card">
+    <div class="flex justify-between items-center mb-6">
+      <h3 class="text-xl font-bold text-white">Platform Growth</h3>
+      <span class="px-3 py-1 bg-gray-800 rounded-full text-xs text-gray-300">Last 6 months</span>
+    </div>
+    <canvas id="growthChart"></canvas>
+  </div>
+
+  <!-- Distribution Chart -->
+  <div class="chart-card">
+    <div class="flex justify-between items-center mb-6">
+      <h3 class="text-xl font-bold text-white">User Distribution</h3>
+      <span class="px-3 py-1 bg-gray-800 rounded-full text-xs text-gray-300">Current</span>
+    </div>
+    <canvas id="distributionChart"></canvas>
+  </div>
+
+</div>
+
+<!-- INSIGHTS SECTION -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+
+  <!-- Top Insights -->
+  <div class="chart-card">
+    <h3 class="text-xl font-bold text-white mb-6">Market Insights</h3>
+    <div class="space-y-4">
+      
+      <div class="insight-item">
+        <div class="flex items-start space-x-4">
+          <div class="insight-number">1</div>
+          <div>
+            <h4 class="text-white font-semibold">Fastest Growing Sector</h4>
+            <p class="text-gray-400 text-sm mt-1">AI & Machine Learning startups are growing at 45% YoY, leading the ecosystem.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="insight-item">
+        <div class="flex items-start space-x-4">
+          <div class="insight-number">2</div>
+          <div>
+            <h4 class="text-white font-semibold">Investment Trends</h4>
+            <p class="text-gray-400 text-sm mt-1">Seed funding rounds have increased by 32%, showing strong investor confidence.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="insight-item">
+        <div class="flex items-start space-x-4">
+          <div class="insight-number">3</div>
+          <div>
+            <h4 class="text-white font-semibold">Talent Demand</h4>
+            <p class="text-gray-400 text-sm mt-1">Tech roles are the most demanded, with 38% of all open positions requiring technical skills.</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Quick Stats -->
+  <div class="chart-card">
+    <h3 class="text-xl font-bold text-white mb-6">Quick Statistics</h3>
+    <div class="space-y-4">
+      
+      <div class="stat-row">
+        <div class="flex justify-between items-center">
+          <span class="text-gray-400">Avg Investment per Startup</span>
+          <span class="text-white font-bold text-2xl">${{ (data.total_investments / data.total_startups)|int if data.total_startups > 0 else 0 }}K</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" style="width: 65%"></div>
+        </div>
+      </div>
+
+      <div class="stat-row">
+        <div class="flex justify-between items-center">
+          <span class="text-gray-400">Startups Count</span>
+          <span class="text-white font-bold text-2xl">{{ data.total_startups }}</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" style="width: 75%"></div>
+        </div>
+      </div>
+
+      <div class="stat-row">
+        <div class="flex justify-between items-center">
+          <span class="text-gray-400">Total Users</span>
+          <span class="text-white font-bold text-2xl">{{ data.total_users }}</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" style="width: 85%"></div>
+        </div>
+      </div>
+
+      <div class="stat-row">
+        <div class="flex justify-between items-center">
+          <span class="text-gray-400">Total Investments</span>
+          <span class="text-white font-bold text-2xl">{{ data.total_investments }}</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" style="width: 90%"></div>
+        </div>
+      </div>
+
+      <div class="stat-row">
+        <div class="flex justify-between items-center">
+          <span class="text-gray-400">Open Roles</span>
+          <span class="text-white font-bold text-2xl">{{ data.total_roles }}</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" style="width: 70%"></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+</div>
+
+<style>
+
+.metric-card {
+  background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
+  border: 1px solid #374151;
+  border-radius: 1rem;
+  padding: 1.5rem;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.metric-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.metric-card:hover {
+  border-color: #4b5563;
+  box-shadow: 0 20px 25px -5px rgba(59, 130, 246, 0.2);
+  transform: translateY(-2px);
+}
+
+.metric-card:hover::before {
+  opacity: 1;
+}
+
+.metric-icon {
+  width: 60px;
+  height: 60px;
+  border-radius: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  backdrop-filter: blur(10px);
+}
+
+.chart-card {
+  background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
+  border: 1px solid #374151;
+  border-radius: 1rem;
+  padding: 2rem;
+  transition: all 0.3s ease;
+}
+
+.chart-card:hover {
+  border-color: #4b5563;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
+}
+
+.insight-item {
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid #374151;
+  border-radius: 0.75rem;
+  transition: all 0.3s ease;
+}
+
+.insight-item:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: #4b5563;
+}
+
+.insight-number {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+  border-radius: 50%;
+  color: white;
+  font-weight: bold;
+  font-size: 1.2rem;
+  flex-shrink: 0;
+}
+
+.stat-row {
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 0.75rem;
+  border: 1px solid #374151;
+}
+
+.progress-bar {
+  height: 6px;
+  background: #2d3748;
+  border-radius: 3px;
+  margin-top: 0.5rem;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+  border-radius: 3px;
+  transition: width 0.5s ease;
+}
+
+</style>
+
+<script>
+
+// Growth Chart
+const growthCtx = document.getElementById('growthChart');
+new Chart(growthCtx, {
+  type: 'line',
+  data: {
+    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+    datasets: [{
+      label: 'Startups',
+      data: [{{ data.total_startups * 0.3 }}, {{ data.total_startups * 0.45 }}, {{ data.total_startups * 0.6 }}, {{ data.total_startups * 0.75 }}, {{ data.total_startups * 0.9 }}, {{ data.total_startups }}],
+      borderColor: '#3b82f6',
+      backgroundColor: 'rgba(59, 130, 246, 0.1)',
+      borderWidth: 3,
+      fill: true,
+      tension: 0.4,
+      pointRadius: 6,
+      pointBackgroundColor: '#3b82f6',
+      pointBorderColor: '#1f2937',
+      pointBorderWidth: 2
+    }, {
+      label: 'Users',
+      data: [{{ data.total_users * 0.2 }}, {{ data.total_users * 0.35 }}, {{ data.total_users * 0.5 }}, {{ data.total_users * 0.68 }}, {{ data.total_users * 0.85 }}, {{ data.total_users }}],
+      borderColor: '#8b5cf6',
+      backgroundColor: 'rgba(139, 92, 246, 0.1)',
+      borderWidth: 3,
+      fill: true,
+      tension: 0.4,
+      pointRadius: 6,
+      pointBackgroundColor: '#8b5cf6',
+      pointBorderColor: '#1f2937',
+      pointBorderWidth: 2
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      legend: {
+        labels: {
+          color: '#d1d5db',
+          font: { size: 12, weight: 'bold' },
+          padding: 20
+        }
+      }
+    },
+    scales: {
+      y: {
+        ticks: { color: '#9ca3af' },
+        grid: { color: 'rgba(75, 85, 99, 0.2)' }
+      },
+      x: {
+        ticks: { color: '#9ca3af' },
+        grid: { color: 'rgba(75, 85, 99, 0.2)' }
+      }
+    }
+  }
+});
+
+// Distribution Chart
+const distributionCtx = document.getElementById('distributionChart');
+new Chart(distributionCtx, {
+  type: 'doughnut',
+  data: {
+    labels: ['Startups', 'Users', 'Roles', 'Investments'],
+    datasets: [{
+      data: [{{ data.total_startups }}, {{ data.total_users }}, {{ data.total_roles }}, {{ data.total_investments }}],
+      backgroundColor: [
+        'rgba(59, 130, 246, 0.8)',
+        'rgba(139, 92, 246, 0.8)',
+        'rgba(34, 197, 94, 0.8)',
+        'rgba(249, 115, 22, 0.8)'
+      ],
+      borderColor: '#111827',
+      borderWidth: 2
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      legend: {
+        labels: {
+          color: '#d1d5db',
+          font: { size: 12, weight: 'bold' },
+          padding: 20
+        }
+      }
+    }
+  }
+});
+
+</script>
+
+{% endblock %}

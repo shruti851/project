@@ -1,65 +1,132 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>My Startups</title>
-  <script>
-  tailwind.config = {
-    darkMode: 'class'
-  }
+<title>My Startups</title>
+
+<script>
+tailwind.config = { darkMode: 'class' }
 </script>
-  <script src="https://cdn.tailwindcss.com"></script>
+
+<script src="https://cdn.tailwindcss.com"></script>
+
+<script>
+if(localStorage.theme === "dark"){
+  document.documentElement.classList.add("dark");
+}
+
+function toggleTheme(){
+  document.documentElement.classList.toggle("dark");
+  localStorage.theme =
+    document.documentElement.classList.contains("dark")
+      ? "dark" : "light";
+}
+</script>
+
 </head>
 
-<body class="bg-gray-100">
+<body class="min-h-screen transition duration-300
+bg-gray-100 dark:bg-gray-950
+text-gray-800 dark:text-gray-200">
 
-<nav class="bg-blue-700 p-4 text-white text-lg">
-  AI-Powered Startup Ecosystem
+<!-- NAVBAR -->
+<nav class="bg-blue-700 text-white p-4 flex justify-between items-center">
+
+<span class="text-lg font-semibold">
+🚀 My Startup Projects
+</span>
+
+<button onclick="toggleTheme()"
+class="bg-white text-black px-3 py-1 rounded
+dark:bg-gray-800 dark:text-white">
+🌙
+</button>
+
 </nav>
 
-<div class="max-w-6xl mx-auto mt-8">
+<!-- CONTENT -->
+<div class="max-w-6xl mx-auto mt-8 px-4">
 
-  <h2 class="text-2xl font-bold mb-4">My Startup Projects</h2>
+{% if startups %}
 
-  <div class="grid md:grid-cols-2 gap-5">
+<div class="grid md:grid-cols-2 gap-6">
 
-    {% for s in startups %}
-    <div class="bg-white p-5 rounded shadow">
+{% for s in startups %}
+<div class="bg-white dark:bg-gray-900
+p-6 rounded-xl shadow
+border border-gray-200 dark:border-gray-800
+transition hover:scale-[1.01]">
 
-      <div class="flex justify-between items-center">
-        <h3 class="text-xl font-semibold">{{ s.title }}</h3>
-        <span class="text-sm px-3 py-1 rounded
-          {% if s.visibility == 'Public' %}
-            bg-green-100 text-green-700
-          {% else %}
-            bg-gray-200 text-gray-700
-          {% endif %}
-        ">
-          {{ s.visibility }}
-        </span>
-      </div>
+<!-- Title + Visibility -->
+<div class="flex justify-between items-center">
 
-      <p class="text-gray-600 mt-1">{{ s.domain }}</p>
+<h3 class="text-xl font-semibold">
+{{ s.title }}
+</h3>
 
-      <div class="mt-3 text-sm space-y-1">
-        <p><b>Funding:</b> {{ s.funding }}</p>
-        <p><b>Team:</b> {{ s.team }}</p>
-      </div>
+<span class="text-xs px-3 py-1 rounded-full
+{% if s.visibility == 'Public' %}
+bg-green-600 text-white
+{% else %}
+bg-gray-500 text-white
+{% endif %}">
+{{ s.visibility }}
+</span>
 
-      <div class="mt-4 flex justify-between">
-        <a href="/update-startup/{{ s._id }}"
-           class="text-blue-600 font-semibold">
-          Update Project
-        </a>
+</div>
 
-        <span class="text-sm text-gray-500">
-          Created by You
-        </span>
-      </div>
+<!-- Domain -->
+<p class="text-gray-500 dark:text-gray-400 mt-1">
+{{ s.domain }}
+</p>
 
-    </div>
-    {% endfor %}
+<!-- Details -->
+<div class="mt-3 text-sm space-y-1">
 
-  </div>
+<p><b>Funding:</b> {{ s.funding }}</p>
+<p><b>Team:</b> {{ s.team }}</p>
+
+</div>
+
+<!-- Actions -->
+<div class="mt-5 flex justify-between items-center">
+
+<a href="/update-startup/{{ s._id }}"
+class="bg-blue-600 hover:bg-blue-700
+text-white px-4 py-2 rounded transition">
+Update
+</a>
+
+<span class="text-xs text-gray-500 dark:text-gray-400">
+Created by You
+</span>
+
+</div>
+
+</div>
+{% endfor %}
+
+</div>
+
+{% else %}
+
+<!-- Empty State -->
+<div class="bg-white dark:bg-gray-900
+p-10 rounded-xl shadow text-center">
+
+<p class="text-gray-500 dark:text-gray-400 mb-4">
+You haven’t created any startup projects yet.
+</p>
+
+<a href="/pitch"
+class="bg-blue-600 hover:bg-blue-700
+text-white px-6 py-2 rounded transition">
+Pitch a Startup
+</a>
+
+</div>
+
+{% endif %}
+
 </div>
 
 </body>

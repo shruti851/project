@@ -1,245 +1,188 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Dashboard | AI Startup Ecosystem</title>
-  <script>
-  tailwind.config = {
-    darkMode: 'class'
-  }
-</script>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-</head>
+{% extends "base.html" %}
 
-<body class="min-h-screen bg-gradient-to-br from-slate-100 via-gray-100 to-slate-200">
+{% block title %}
+Dashboard | AI Startup Ecosystem
+{% endblock %}
 
-<!-- NAVBAR -->
-<nav class="bg-white/80 backdrop-blur-lg shadow-md px-6 py-4 flex justify-between items-center">
-  <h1 class="text-xl font-bold text-blue-700">
-    🚀 AI-Powered Startup Ecosystem
-  </h1>
+{% block page_title %}
+Welcome, {{ name }}
+{% endblock %}
 
-  <div class="flex items-center gap-4">
-    <span class="px-4 py-1 rounded-full bg-blue-100 text-blue-700 text-sm font-semibold">
-      {{ role }}
-    </span>
+{% block page_subtitle %}
+Your personalized control center
+{% endblock %}
 
-    <a href="/logout"
-       class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition">
-      Logout
-    </a>
-  </div>
-</nav>
+{% block content %}
 
-<!-- MAIN CONTENT -->
-<div class="max-w-7xl mx-auto px-6 py-10">
+<div class="max-w-7xl mx-auto">
 
-  <!-- HEADER -->
-  <div class="mb-10">
-    <h2 class="text-4xl font-extrabold text-gray-800">
-      Welcome, {{ name }}
-    </h2>
-    <p class="text-gray-600 mt-2 text-lg">
-      Your personalized control center
-    </p>
-  </div>
+<!-- STATS -->
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-12">
 
-  <!-- STATS -->
-  <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-12">
+<div class="stat-card">
+<h4>Total Startups</h4>
+<span>{{ stats.startups if stats and stats.startups is not none else 0 }}</span>
+</div>
 
-    <div class="stat-card">
-      <h4>Total Startups</h4>
-      <span>{{ stats.startups if stats and stats.startups is not none else 0 }}</span>
-    </div>
+<div class="stat-card">
+<h4>Total Funding Requests</h4>
+<span>{{ stats.funding if stats and stats.funding is not none else 0 }}</span>
+</div>
 
-    <div class="stat-card">
-      <h4>Total Funding Requests</h4>
-      <span>{{ stats.funding if stats and stats.funding is not none else 0 }}</span>
-    </div>
-
-    <div class="stat-card">
-      <h4>Total Users</h4>
-      <span>{{ stats.users if stats and stats.users is not none else 0 }}</span>
-    </div>
-
-  </div>
-
-  <!-- ROLE BASED ACTION CARDS -->
-  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-
-    {% if role == "Founder" %}
-    <a href="/pitch" class="glass-card hover-border-blue">
-      <span class="card-icon bg-blue-600">🚀</span>
-      <h3>Pitch Startup</h3>
-      <p>Share ideas & upload pitch decks</p>
-    </a>
-
-    <a href="/create-role" class="glass-card hover-border-indigo">
-      <span class="card-icon bg-indigo-600">👥</span>
-      <h3>Create Open Roles</h3>
-      <p>Find the right talent</p>
-    </a>
-
-    <a href="/funding-requests" class="glass-card hover-border-green">
-      <span class="card-icon bg-green-600">💰</span>
-      <h3>Funding Requests</h3>
-      <p>Review investor offers</p>
-    </a>
-    {% endif %}
-
-    {% if role == "Talent" %}
-    <a href="/roles" class="glass-card hover-border-green">
-      <span class="card-icon bg-green-600">📄</span>
-      <h3>Apply for Roles</h3>
-      <p>Join innovative startups</p>
-    </a>
-
-    <a href="/applications" class="glass-card hover-border-yellow">
-      <span class="card-icon bg-yellow-500">🔔</span>
-      <h3>Application Status</h3>
-      <p>Track your applications</p>
-    </a>
-
-    <a href="/ai-skill-match" class="glass-card hover-border-purple">
-      <span class="card-icon bg-purple-600">🤖</span>
-      <h3>AI Skill Matching</h3>
-      <p>Smart job recommendations</p>
-    </a>
-    {% endif %}
-
-    {% if role == "Investor" %}
-    <a href="/investor/startups" class="glass-card hover-border-purple">
-      <span class="card-icon bg-purple-600">📊</span>
-      <h3>Browse Startups</h3>
-      <p>Explore investment opportunities</p>
-    </a>
-
-    <a href="/investor/portfolio" class="glass-card hover-border-blue">
-      <span class="card-icon bg-blue-600">💼</span>
-      <h3>Investment Portfolio</h3>
-      <p>Your funded startups</p>
-    </a>
-
-    <a href="/investor/insights" class="glass-card hover-border-pink">
-      <span class="card-icon bg-pink-600">📈</span>
-      <h3>Market Insights</h3>
-      <p>AI-powered analytics</p>
-    </a>
-    {% endif %}
-
-  </div>
-
-  <!-- ANALYTICS CHART -->
-  <div class="bg-white rounded-xl shadow-lg p-6 mt-16">
-    <h3 class="text-xl font-bold mb-4 text-gray-800">
-      📊 Platform Analytics
-    </h3>
-    <canvas id="analyticsChart"></canvas>
-  </div>
+<div class="stat-card">
+<h4>Total Users</h4>
+<span>{{ stats.users if stats and stats.users is not none else 0 }}</span>
+</div>
 
 </div>
 
-<!-- DYNAMIC CHART SCRIPT -->
+<!-- ROLE ACTION CARDS -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+
+{% if role == "Founder" %}
+<a href="{{ url_for('pitch') }}" class="glass-card">
+<span class="card-icon bg-blue-600">🚀</span>
+<h3>Pitch Startup</h3>
+<p>Share ideas & upload decks</p>
+</a>
+
+<a href="{{ url_for('create_role') }}" class="glass-card">
+<span class="card-icon bg-indigo-600">👥</span>
+<h3>Create Open Roles</h3>
+<p>Find the right talent</p>
+</a>
+
+<a href="{{ url_for('view_funding_requests') }}" class="glass-card">
+<span class="card-icon bg-green-600">💰</span>
+<h3>Funding Requests</h3>
+<p>Review investor offers</p>
+</a>
+{% endif %}
+
+{% if role == "Talent" %}
+<a href="{{ url_for('view_roles') }}" class="glass-card">
+<span class="card-icon bg-green-600">📄</span>
+<h3>Apply for Roles</h3>
+<p>Join startups</p>
+</a>
+
+<a href="{{ url_for('my_applications') }}" class="glass-card">
+<span class="card-icon bg-yellow-500">🔔</span>
+<h3>Application Status</h3>
+<p>Track progress</p>
+</a>
+
+<a href="{{ url_for('ai_skill_match') }}" class="glass-card">
+<span class="card-icon bg-purple-600">🤖</span>
+<h3>AI Skill Match</h3>
+<p>Smart recommendations</p>
+</a>
+{% endif %}
+
+{% if role == "Investor" %}
+<a href="{{ url_for('investor_view_startups') }}" class="glass-card">
+<span class="card-icon bg-purple-600">📊</span>
+<h3>Browse Startups</h3>
+<p>Investment opportunities</p>
+</a>
+
+<a href="{{ url_for('investor_portfolio') }}" class="glass-card">
+<span class="card-icon bg-blue-600">💼</span>
+<h3>Portfolio</h3>
+<p>Your funded startups</p>
+</a>
+
+<a href="{{ url_for('analytics') }}" class="glass-card">
+<span class="card-icon bg-pink-600">📈</span>
+<h3>Market Insights</h3>
+<p>AI analytics</p>
+</a>
+{% endif %}
+
+</div>
+
+<!-- ANALYTICS -->
+<div class="dark-card mt-16">
+<h3 class="text-xl font-bold mb-4">
+📊 Platform Analytics
+</h3>
+<canvas id="analyticsChart"></canvas>
+</div>
+
+</div>
+
 <script>
 const ctx = document.getElementById('analyticsChart');
 
 new Chart(ctx, {
-  type: 'bar',
-  data: {
-    labels: {{ chart_labels | tojson }},
-    datasets: [{
-      label: 'Dashboard Overview',
-      data: {{ chart_data | tojson }},
-      backgroundColor: [
-        'rgba(59,130,246,0.7)',
-        'rgba(34,197,94,0.7)',
-        'rgba(168,85,247,0.7)'
-      ],
-      borderRadius: 8
-    }]
-  },
-  options: {
-    responsive: true,
-    plugins: {
-      legend: { display: false }
-    }
-  }
+type: 'bar',
+data: {
+labels: {{ chart_labels | tojson }},
+datasets: [{
+label: 'Dashboard Overview',
+data: {{ chart_data | tojson }},
+backgroundColor: [
+'rgba(59,130,246,0.7)',
+'rgba(34,197,94,0.7)',
+'rgba(168,85,247,0.7)'
+],
+borderRadius: 8
+}]
+},
+options: {
+responsive: true,
+plugins: { legend: { display: false } }
+}
 });
 </script>
 
-
-<!-- STYLES -->
 <style>
 .glass-card {
-  background: rgba(255,255,255,0.75);
-  backdrop-filter: blur(14px);
-  border-radius: 1.25rem;
-  padding: 1.75rem;
-  border: 1px solid rgba(255,255,255,0.4);
-  box-shadow: 0 20px 35px rgba(0,0,0,0.08);
-  transition: all 0.35s ease;
+background: rgba(255,255,255,0.75);
+backdrop-filter: blur(14px);
+border-radius: 1.25rem;
+padding: 1.75rem;
+border: 1px solid rgba(255,255,255,0.4);
+box-shadow: 0 20px 35px rgba(0,0,0,0.08);
+transition: all 0.35s ease;
 }
-
+.dark .glass-card {
+background: rgba(17,24,39,0.7);
+border: 1px solid #1f2937;
+}
 .glass-card:hover {
-  transform: translateY(-8px) scale(1.02);
+transform: translateY(-8px) scale(1.02);
 }
-
-.glass-card h3 {
-  margin-top: 1rem;
-  font-size: 1.3rem;
-  font-weight: 700;
-  color: #1f2937;
-}
-
-.glass-card p {
-  margin-top: 0.4rem;
-  color: #6b7280;
-  font-size: 0.95rem;
-}
-
 .card-icon {
-  width: 3.2rem;
-  height: 3.2rem;
-  border-radius: 0.9rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  font-size: 1.6rem;
+width: 3.2rem;
+height: 3.2rem;
+border-radius: 0.9rem;
+display: flex;
+align-items: center;
+justify-content: center;
+color: white;
+font-size: 1.6rem;
 }
-
 .stat-card {
-  background: linear-gradient(135deg, #ffffff, #f9fafb);
-  border-radius: 1.2rem;
-  padding: 1.5rem;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.08);
-  transition: transform 0.3s ease;
+background: linear-gradient(135deg,#fff,#f9fafb);
+border-radius: 1.2rem;
+padding: 1.5rem;
+box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+transition: transform 0.3s ease;
 }
-
-.stat-card:hover {
-  transform: translateY(-6px);
+.dark .stat-card {
+background: #111827;
+border: 1px solid #1f2937;
 }
-
-.stat-card h4 {
-  font-size: 0.9rem;
-  color: #6b7280;
-}
-
-.stat-card span {
-  font-size: 2.2rem;
-  font-weight: 800;
-  color: #2563eb;
-}
-
-.hover-border-blue:hover { border-color: #3b82f6; }
-.hover-border-indigo:hover { border-color: #6366f1; }
-.hover-border-green:hover { border-color: #22c55e; }
-.hover-border-yellow:hover { border-color: #eab308; }
-.hover-border-purple:hover { border-color: #a855f7; }
-.hover-border-pink:hover { border-color: #ec4899; }
-
+.stat-card:hover { transform: translateY(-6px); }
+.stat-card h4 { color:#6b7280; }
+.stat-card span { font-size:2.2rem;font-weight:800;color:#2563eb; }
+.hover-border-blue:hover { border-color:#3b82f6; }
+.hover-border-indigo:hover { border-color:#6366f1; }
+.hover-border-green:hover { border-color:#22c55e; }
+.hover-border-yellow:hover { border-color:#eab308; }
+.hover-border-purple:hover { border-color:#a855f7; }
+.hover-border-pink:hover { border-color:#ec4899; }
 </style>
 
-</body>
-</html>
+{% endblock %}

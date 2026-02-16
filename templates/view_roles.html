@@ -1,35 +1,104 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Open Roles</title>
-  <script>
-  tailwind.config = {
-    darkMode: 'class'
-  }
+<title>Open Roles</title>
+
+<script>
+tailwind.config = { darkMode: 'class' }
 </script>
-  <script src="https://cdn.tailwindcss.com"></script>
+
+<script src="https://cdn.tailwindcss.com"></script>
+
+<script>
+if(localStorage.theme === "dark"){
+  document.documentElement.classList.add("dark");
+}
+
+function toggleTheme(){
+  document.documentElement.classList.toggle("dark");
+  localStorage.theme =
+    document.documentElement.classList.contains("dark")
+      ? "dark" : "light";
+}
+</script>
+
 </head>
-<body class="bg-gray-100">
 
-<div class="max-w-4xl mx-auto mt-8">
-  <h2 class="text-2xl font-bold mb-4">Open Roles</h2>
+<body class="min-h-screen transition duration-300
+bg-gray-100 dark:bg-gray-950
+text-gray-800 dark:text-gray-200">
 
-  {% for r in roles %}
-  <div class="bg-white p-4 mb-3 rounded shadow">
-    <h3 class="text-xl font-semibold">{{ r.role_name }}</h3>
-    <p class="text-sm text-gray-500">Startup: {{ r.startup_title }}</p>
-    <p>Skills: {{ r.skills }}</p>
+<!-- NAVBAR -->
+<nav class="bg-blue-700 text-white p-4 flex justify-between">
 
-    <a href="/apply/{{ r._id }}"
-       class="inline-block mt-2 bg-green-600 text-white px-4 py-1 rounded">
-       Apply
-    </a>
-    <a href="/ai/talent-match/{{ startup._id }}" class="btn btn-dark">
-    Find AI Talent Match
+<span class="font-semibold text-lg">
+👨‍💼 Open Roles
+</span>
+
+<button onclick="toggleTheme()"
+class="bg-white text-black px-3 py-1 rounded
+dark:bg-gray-800 dark:text-white">
+🌙
+</button>
+
+</nav>
+
+<!-- CONTENT -->
+<div class="max-w-4xl mx-auto mt-8 px-4">
+
+{% if roles %}
+
+{% for r in roles %}
+<div class="bg-white dark:bg-gray-900
+p-5 mb-4 rounded-xl shadow
+border border-gray-200 dark:border-gray-800
+transition hover:scale-[1.01]">
+
+<h3 class="text-xl font-semibold mb-1">
+{{ r.role_name }}
+</h3>
+
+<p class="text-sm text-gray-500 dark:text-gray-400">
+Startup: {{ r.startup_title }}
+</p>
+
+<p class="mt-2">
+<strong>Skills:</strong> {{ r.skills }}
+</p>
+
+<div class="mt-4 flex gap-3 flex-wrap">
+
+<a href="/apply/{{ r._id }}"
+class="bg-green-600 hover:bg-green-700
+text-white px-4 py-2 rounded transition">
+Apply
 </a>
 
-  </div>
-  {% endfor %}
+<!-- FIXED AI MATCH LINK -->
+<a href="/ai/talent-match/{{ r.startup_id }}"
+class="bg-purple-600 hover:bg-purple-700
+text-white px-4 py-2 rounded transition">
+AI Match
+</a>
+
+</div>
+
+</div>
+{% endfor %}
+
+{% else %}
+
+<div class="bg-white dark:bg-gray-900
+p-8 rounded-xl shadow text-center">
+
+<p class="text-gray-500 dark:text-gray-400">
+No open roles available right now.
+</p>
+
+</div>
+
+{% endif %}
+
 </div>
 
 </body>

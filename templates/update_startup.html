@@ -1,87 +1,135 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Update Startup</title>
-  <script>
-  tailwind.config = {
-    darkMode: 'class'
-  }
+<title>Update Startup</title>
+
+<script>
+tailwind.config = { darkMode: 'class' }
 </script>
-  <script src="https://cdn.tailwindcss.com"></script>
+
+<script src="https://cdn.tailwindcss.com"></script>
+
+<script>
+if(localStorage.theme === "dark"){
+  document.documentElement.classList.add("dark");
+}
+
+function toggleTheme(){
+  document.documentElement.classList.toggle("dark");
+  localStorage.theme =
+    document.documentElement.classList.contains("dark")
+      ? "dark" : "light";
+}
+</script>
+
 </head>
 
-<body class="bg-gray-100">
+<body class="min-h-screen transition duration-300
+bg-gray-100 dark:bg-gray-950
+text-gray-800 dark:text-gray-200">
 
-<!-- Navbar -->
-<nav class="bg-blue-700 p-4 text-white text-lg">
-  AI-Powered Startup Ecosystem
+<!-- NAVBAR -->
+<nav class="bg-blue-700 text-white p-4 flex justify-between items-center">
+
+<span class="font-semibold text-lg">
+🚀 AI Startup Ecosystem
+</span>
+
+<button onclick="toggleTheme()"
+class="bg-white text-black px-3 py-1 rounded
+dark:bg-gray-800 dark:text-white">
+🌙
+</button>
+
 </nav>
 
-<!-- Update Form -->
-<div class="max-w-2xl mx-auto mt-8 bg-white p-6 rounded-lg shadow">
+<!-- FORM CARD -->
+<div class="max-w-2xl mx-auto mt-10
+bg-white dark:bg-gray-900
+p-8 rounded-xl shadow-lg transition">
 
-  <h2 class="text-2xl font-bold mb-1">Update Startup Project</h2>
-  <p class="text-gray-600 mb-6">
-    Modify funding, team requirements, and visibility
-  </p>
+<h2 class="text-3xl font-bold mb-1">
+Update Startup Project
+</h2>
 
-  <form method="POST" class="space-y-5">
+<p class="mb-6 text-gray-600 dark:text-gray-400">
+Modify funding, team requirements, and visibility
+</p>
 
-    <!-- Startup Title (Read-only) -->
-    <div>
-      <label class="font-semibold">Startup Title</label>
-      <input value="{{ startup.title }}"
-             class="w-full p-2 border rounded bg-gray-100"
-             disabled>
-    </div>
+<form method="POST" class="space-y-5">
 
-    <!-- Domain (Read-only) -->
-    <div>
-      <label class="font-semibold">Domain</label>
-      <input value="{{ startup.domain }}"
-             class="w-full p-2 border rounded bg-gray-100"
-             disabled>
-    </div>
+<!-- Title -->
+<div>
+<label class="font-semibold">Startup Title</label>
+<input value="{{ startup.title }}"
+class="w-full p-2 border rounded
+bg-gray-100 dark:bg-gray-800
+border-gray-300 dark:border-gray-700"
+disabled>
+</div>
 
-    <!-- Funding -->
-    <div>
-      <label class="font-semibold">Funding Required</label>
-      <input name="funding"
-             value="{{ startup.funding }}"
-             class="w-full p-2 border rounded">
-    </div>
+<!-- Domain -->
+<div>
+<label class="font-semibold">Domain</label>
+<input value="{{ startup.domain }}"
+class="w-full p-2 border rounded
+bg-gray-100 dark:bg-gray-800
+border-gray-300 dark:border-gray-700"
+disabled>
+</div>
 
-    <!-- Team Requirements -->
-    <div>
-      <label class="font-semibold">Team Requirements</label>
-      <input name="team"
-             value="{{ startup.team }}"
-             class="w-full p-2 border rounded">
-    </div>
+<!-- Funding -->
+<div>
+<label class="font-semibold">Funding Required</label>
+<input name="funding"
+value="{{ startup.funding }}"
+class="w-full p-2 border rounded
+bg-gray-50 dark:bg-gray-800
+border-gray-300 dark:border-gray-700">
+</div>
 
-    <!-- Visibility -->
-    <div>
-      <label class="font-semibold">Project Visibility</label>
-      <select name="visibility" class="w-full p-2 border rounded">
-        <option value="Public"
-          {% if startup.visibility == "Public" %}selected{% endif %}>
-          Public (Visible to Investors)
-        </option>
+<!-- Team -->
+<div>
+<label class="font-semibold">Team Requirements</label>
+<input name="team"
+value="{{ startup.team }}"
+class="w-full p-2 border rounded
+bg-gray-50 dark:bg-gray-800
+border-gray-300 dark:border-gray-700">
+</div>
 
-        <option value="Private"
-          {% if startup.visibility == "Private" %}selected{% endif %}>
-          Private
-        </option>
-      </select>
-    </div>
+<!-- Visibility -->
+<div>
+<label class="font-semibold">Project Visibility</label>
 
-    <!-- Save Button -->
-    <button
-      class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700">
-      Save Changes
-    </button>
+<select name="visibility"
+class="w-full p-2 border rounded
+bg-gray-50 dark:bg-gray-800
+border-gray-300 dark:border-gray-700">
 
-  </form>
+<option value="Public"
+{% if startup.visibility == "Public" %}selected{% endif %}>
+Public (Visible to Investors)
+</option>
+
+<option value="Private"
+{% if startup.visibility == "Private" %}selected{% endif %}>
+Private
+</option>
+
+</select>
+</div>
+
+<!-- Save -->
+<button
+class="w-full bg-blue-600 text-white py-2 rounded
+hover:bg-blue-700 transition">
+
+Save Changes
+</button>
+
+</form>
+
 </div>
 
 </body>

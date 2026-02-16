@@ -1,79 +1,205 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>{% block title %}AI Startup Ecosystem{% endblock %}</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{% block title %}AI Startup Ecosystem{% endblock %}</title>
 
-  <script>
-    tailwind.config = { darkMode: 'class' }
-  </script>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<!-- Prevent theme flash -->
+<script>
+// Always set dark mode
+document.documentElement.classList.add("dark");
+localStorage.theme = "dark";
+</script>
+
+<script>
+tailwind.config = { darkMode: "class" }
+</script>
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 </head>
 
-<body class="bg-gray-950 text-gray-200 min-h-screen flex">
+<body class="bg-gray-900 text-gray-200 min-h-screen dark transition-colors duration-300">
 
-<!-- SIDEBAR -->
-<aside class="w-64 bg-gray-900 border-r border-gray-800 p-6 hidden md:flex flex-col">
+<!-- MOBILE MENU OVERLAY -->
+<div id="menu-overlay" class="fixed inset-0 bg-black/40 hidden z-40 lg:hidden" onclick="toggleMenu()"></div>
 
-  <h1 class="text-2xl font-bold text-blue-400 mb-10">
-    🚀 AI Ecosystem
-  </h1>
+<!-- HEADER/NAVBAR -->
+<header class="sticky top-0 bg-gray-900 border-b border-gray-800 z-50 shadow-sm transition-all">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex justify-between items-center h-16">
+      
+      <!-- Logo -->
+      <a href="{{ url_for('home') }}" class="flex items-center space-x-2">
+        <span class="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+          🚀 AI Ecosystem
+        </span>
+      </a>
 
-  <nav class="space-y-3 text-sm">
+      <!-- Desktop Navigation -->
+      <nav class="hidden lg:flex items-center space-x-8">
+        <a href="{{ url_for('dashboard') }}" class="nav-item">Dashboard</a>
+        
+        <!-- Startups Dropdown -->
+        <div class="dropdown">
+          <button class="nav-item">Startups</button>
+          <div class="dropdown-menu">
+            <a href="{{ url_for('pitch') }}">Pitch Startup</a>
+            <a href="{{ url_for('view_startups') }}">My Startups</a>
+          </div>
+        </div>
 
-    <a href="/dashboard" class="nav-link">Dashboard</a>
-    <a href="/view_roles" class="nav-link">Roles</a>
-    <a href="/view_startups" class="nav-link">Startups</a>
-    <a href="/investor_match" class="nav-link">Investor Match</a>
-    <a href="/analytics" class="nav-link">Analytics</a>
-    <a href="/market_insights" class="nav-link">Market Insights</a>
-    <a href="/logout" class="text-red-400 hover:bg-gray-800 px-4 py-2 rounded-lg block transition">
-      Logout
-    </a>
+        <!-- Roles Dropdown -->
+        <div class="dropdown">
+          <button class="nav-item">Roles</button>
+          <div class="dropdown-menu">
+            <a href="{{ url_for('create_role') }}">Create Role</a>
+            <a href="{{ url_for('view_roles') }}">Browse Roles</a>
+          </div>
+        </div>
 
-  </nav>
+        <!-- Talent Dropdown -->
+        <div class="dropdown">
+          <button class="nav-item">Talent</button>
+          <div class="dropdown-menu">
+            <a href="{{ url_for('my_applications') }}">My Applications</a>
+          </div>
+        </div>
 
-</aside>
+        <!-- Investor Dropdown -->
+        <div class="dropdown">
+          <button class="nav-item">Investor</button>
+          <div class="dropdown-menu">
+            <a href="{{ url_for('investor_view_startups') }}">Browse Startups</a>
+            <a href="{{ url_for('investor_portfolio') }}">Portfolio</a>
+          </div>
+        </div>
 
-<!-- MAIN -->
-<div class="flex-1 p-10">
+        <a href="{{ url_for('analytics') }}" class="nav-item">Analytics</a>
+      </nav>
 
-  <div class="mb-10">
-    <h2 class="text-2xl font-bold">
-      {% block page_title %}{% endblock %}
-    </h2>
-    <p class="text-gray-400 text-sm mt-1">
-      {% block page_subtitle %}{% endblock %}
-    </p>
+      <!-- Right Side Icons -->
+      <div class="flex items-center space-x-4">
+        <a href="{{ url_for('logout') }}" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition hidden sm:block text-sm font-medium">
+          Logout
+        </a>
+
+        <!-- Mobile Menu Button -->
+        <button onclick="toggleMenu()" class="lg:hidden p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">
+          ☰
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="hidden lg:hidden border-t border-gray-800 py-4 space-y-2 pb-4">
+      <a href="{{ url_for('dashboard') }}" class="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-800 rounded">Dashboard</a>
+      <a href="{{ url_for('pitch') }}" class="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-800 rounded">Pitch Startup</a>
+      <a href="{{ url_for('view_startups') }}" class="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-800 rounded">My Startups</a>
+      <a href="{{ url_for('create_role') }}" class="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-800 rounded">Create Role</a>
+      <a href="{{ url_for('view_roles') }}" class="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-800 rounded">Browse Roles</a>
+      <a href="{{ url_for('my_applications') }}" class="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-800 rounded">My Applications</a>
+      <a href="{{ url_for('investor_view_startups') }}" class="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-800 rounded">Browse Startups (Investor)</a>
+      <a href="{{ url_for('investor_portfolio') }}" class="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-800 rounded">Portfolio</a>
+      <a href="{{ url_for('analytics') }}" class="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-800 rounded">Analytics</a>
+      <a href="{{ url_for('logout') }}" class="block px-4 py-2 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-gray-800 rounded">Logout</a>
+    </div>
   </div>
+</header>
 
-  {% block content %}{% endblock %}
-
+<!-- PAGE HEADER -->
+<div class="bg-gray-900 border-b border-gray-800 py-6 mb-8">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <h2 class="text-3xl font-bold">{% block page_title %}{% endblock %}</h2>
+    <p class="text-gray-600 dark:text-gray-400 text-sm mt-2">{% block page_subtitle %}{% endblock %}</p>
+  </div>
 </div>
 
+<!-- PAGE CONTENT -->
+<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
+{% block content %}{% endblock %}
+</main>
+
+<!-- STYLES -->
 <style>
-.nav-link {
+
+.nav-item {
+  color: #9ca3af;
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  position: relative;
+}
+
+.nav-item:hover {
+  color: #ffffff;
+  background-color: #374151;
+}
+
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-menu {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background-color: #1f2937;
+  min-width: 180px;
+  box-shadow: 0 8px 16px rgba(0,0,0,0.5);
+  border-radius: 0.5rem;
+  margin-top: 0.5rem;
+  z-index: 50;
+}
+
+.dropdown:hover .dropdown-menu {
   display: block;
-  padding: 0.6rem 1rem;
-  border-radius: 0.75rem;
+}
+
+.dropdown-menu a {
   color: #d1d5db;
-  transition: all 0.3s ease;
+  padding: 0.75rem 1rem;
+  text-decoration: none;
+  display: block;
+  font-size: 0.875rem;
+  transition: all 0.2s ease;
+  border-radius: 0;
 }
 
-.nav-link:hover {
-  background: #1f2937;
-  color: white;
+.dropdown-menu a:first-child {
+  border-radius: 0.5rem 0.5rem 0 0;
 }
 
-.dark-card {
-  background: #111827;
-  border: 1px solid #1f2937;
-  border-radius: 1.5rem;
-  padding: 2rem;
-  box-shadow: 0 15px 40px rgba(0,0,0,0.5);
+.dropdown-menu a:last-child {
+  border-radius: 0 0 0.5rem 0.5rem;
 }
+
+.dropdown-menu a:hover {
+  background-color: #374151;
+  color: #ffffff;
+  padding-left: 1.5rem;
+}
+
 </style>
+
+<!-- SCRIPTS -->
+<script>
+
+function toggleMenu() {
+  const menu = document.getElementById("mobile-menu");
+  const overlay = document.getElementById("menu-overlay");
+  
+  menu.classList.toggle("hidden");
+  overlay.classList.toggle("hidden");
+}
+
+</script>
 
 </body>
 </html>

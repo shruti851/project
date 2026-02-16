@@ -1,131 +1,249 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Analytics | AI Startup Ecosystem</title>
-  <script>
-  tailwind.config = {
-    darkMode: 'class'
-  }
-</script>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-</head>
+{% extends "base.html" %}
 
-<body class="bg-gray-100 min-h-screen">
+{% block title %}
+Analytics | AI Startup Ecosystem
+{% endblock %}
 
-<!-- NAVBAR -->
-<nav class="bg-indigo-600 p-4 text-white font-semibold">
-  📊 Analytics & Insights – {{ role }}
-</nav>
+{% block page_title %}
+📊 Analytics Dashboard
+{% endblock %}
 
-<div class="max-w-6xl mx-auto p-6">
+{% block page_subtitle %}
+Platform insights and your performance metrics
+{% endblock %}
 
-  <h2 class="text-3xl font-bold mb-6 text-gray-800">
-    Analytics Dashboard
-  </h2>
+{% block content %}
 
-  <!-- CHART GRID -->
-  <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+<div class="space-y-8">
 
-    {% if role == "Founder" %}
-      <canvas id="teamGrowth"></canvas>
-      <canvas id="pitchPerformance"></canvas>
-    {% endif %}
-
-    {% if role == "Investor" %}
-      <canvas id="portfolioValue"></canvas>
-      <canvas id="riskAnalysis"></canvas>
-    {% endif %}
-
-    {% if role == "Talent" %}
-      <canvas id="skillDemand"></canvas>
-      <canvas id="profileVisibility"></canvas>
-    {% endif %}
-
+<!-- MAIN STATS GRID -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+  
+  <div class="stat-card-analytics">
+    <div class="flex justify-between items-start">
+      <div>
+        <p class="text-gray-400 text-sm font-medium">Total Startups</p>
+        <h3 class="text-3xl font-bold text-white mt-2">{{ analytics.total_startups }}</h3>
+      </div>
+      <span class="text-3xl">🚀</span>
+    </div>
   </div>
+
+  <div class="stat-card-analytics">
+    <div class="flex justify-between items-start">
+      <div>
+        <p class="text-gray-400 text-sm font-medium">Platform Users</p>
+        <h3 class="text-3xl font-bold text-white mt-2">{{ analytics.total_users }}</h3>
+      </div>
+      <span class="text-3xl">👥</span>
+    </div>
+  </div>
+
+  <div class="stat-card-analytics">
+    <div class="flex justify-between items-start">
+      <div>
+        <p class="text-gray-400 text-sm font-medium">Total Investments</p>
+        <h3 class="text-3xl font-bold text-white mt-2">{{ analytics.total_investments }}</h3>
+      </div>
+      <span class="text-3xl">💰</span>
+    </div>
+  </div>
+
+  <div class="stat-card-analytics">
+    <div class="flex justify-between items-start">
+      <div>
+        <p class="text-gray-400 text-sm font-medium">Open Roles</p>
+        <h3 class="text-3xl font-bold text-white mt-2">{{ analytics.total_roles }}</h3>
+      </div>
+      <span class="text-3xl">💼</span>
+    </div>
+  </div>
+
 </div>
 
-<script>
+<!-- ROLE SPECIFIC SECTION -->
 {% if role == "Founder" %}
-new Chart(document.getElementById('teamGrowth'), {
-  type: 'line',
-  data: {
-    labels: ['Jan','Feb','Mar','Apr'],
-    datasets: [{
-      label: 'Team Growth',
-      data: {{ analytics.team_growth | tojson }},
-      borderColor: 'blue',
-      fill: false
-    }]
-  }
-});
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+  
+  <div class="card-analytics">
+    <h3 class="text-lg font-semibold text-white mb-6">Your Startups</h3>
+    <div class="space-y-4">
+      <div class="flex justify-between items-center py-3 border-b border-gray-700">
+        <span class="text-gray-300">Active Startups</span>
+        <span class="text-2xl font-bold text-blue-400">{{ analytics.my_startups }}</span>
+      </div>
+      <div class="flex justify-between items-center py-3 border-b border-gray-700">
+        <span class="text-gray-300">Funding Requests</span>
+        <span class="text-2xl font-bold text-green-400">{{ analytics.funding_requests }}</span>
+      </div>
+      <div class="flex justify-between items-center py-3">
+        <span class="text-gray-300">Open Roles</span>
+        <span class="text-2xl font-bold text-purple-400">{{ analytics.my_roles }}</span>
+      </div>
+    </div>
+  </div>
 
-new Chart(document.getElementById('pitchPerformance'), {
-  type: 'bar',
-  data: {
-    labels: ['Pitch 1','Pitch 2','Pitch 3','Pitch 4'],
-    datasets: [{
-      label: 'Pitch Performance (%)',
-      data: {{ analytics.pitch_performance | tojson }},
-      backgroundColor: 'green'
-    }]
-  }
-});
+  <div class="card-analytics">
+    <h3 class="text-lg font-semibold text-white mb-6">Team Activity</h3>
+    <div class="space-y-4">
+      <div class="flex justify-between items-center py-3 border-b border-gray-700">
+        <span class="text-gray-300">Applications Received</span>
+        <span class="text-2xl font-bold text-yellow-400">{{ analytics.applications_received }}</span>
+      </div>
+      <div class="flex justify-between items-center py-3">
+        <span class="text-gray-300">Platform Growth</span>
+        <span class="inline-block px-3 py-1 bg-green-600 text-green-100 rounded-full text-sm">📈 Growing</span>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+{% elif role == "Investor" %}
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+  
+  <div class="card-analytics">
+    <h3 class="text-lg font-semibold text-white mb-6">Your Portfolio</h3>
+    <div class="space-y-4">
+      <div class="flex justify-between items-center py-3 border-b border-gray-700">
+        <span class="text-gray-300">Active Investments</span>
+        <span class="text-2xl font-bold text-blue-400">{{ analytics.my_investments }}</span>
+      </div>
+      <div class="flex justify-between items-center py-3 border-b border-gray-700">
+        <span class="text-gray-300">Funded Startups</span>
+        <span class="text-2xl font-bold text-green-400">{{ analytics.funded_startups }}</span>
+      </div>
+      <div class="flex justify-between items-center py-3">
+        <span class="text-gray-300">Portfolio Value</span>
+        <span class="text-2xl font-bold text-yellow-400">${{ analytics.my_portfolio_value }}</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card-analytics">
+    <h3 class="text-lg font-semibold text-white mb-6">Market Overview</h3>
+    <div class="space-y-4">
+      <div class="flex justify-between items-center py-3 border-b border-gray-700">
+        <span class="text-gray-300">Available Startups</span>
+        <span class="text-2xl font-bold text-purple-400">{{ analytics.total_startups }}</span>
+      </div>
+      <div class="flex justify-between items-center py-3">
+        <span class="text-gray-300">Market Status</span>
+        <span class="inline-block px-3 py-1 bg-green-600 text-green-100 rounded-full text-sm">✓ Active</span>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+{% elif role == "Talent" %}
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+  
+  <div class="card-analytics">
+    <h3 class="text-lg font-semibold text-white mb-6">Your Applications</h3>
+    <div class="space-y-4">
+      <div class="flex justify-between items-center py-3 border-b border-gray-700">
+        <span class="text-gray-300">Total Applications</span>
+        <span class="text-2xl font-bold text-blue-400">{{ analytics.my_applications }}</span>
+      </div>
+      <div class="flex justify-between items-center py-3 border-b border-gray-700">
+        <span class="text-gray-300">Approved</span>
+        <span class="text-2xl font-bold text-green-400">{{ analytics.applications_approved }}</span>
+      </div>
+      <div class="flex justify-between items-center py-3">
+        <span class="text-gray-300">Pending</span>
+        <span class="text-2xl font-bold text-yellow-400">{{ analytics.my_applications - analytics.applications_approved }}</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card-analytics">
+    <h3 class="text-lg font-semibold text-white mb-6">Market Opportunities</h3>
+    <div class="space-y-4">
+      <div class="flex justify-between items-center py-3 border-b border-gray-700">
+        <span class="text-gray-300">Open Positions</span>
+        <span class="text-2xl font-bold text-purple-400">{{ analytics.available_roles }}</span>
+      </div>
+      <div class="flex justify-between items-center py-3">
+        <span class="text-gray-300">Job Market</span>
+        <span class="inline-block px-3 py-1 bg-green-600 text-green-100 rounded-full text-sm">🔥 Hot</span>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+{% else %}
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+  
+  <div class="card-analytics">
+    <h3 class="text-lg font-semibold text-white mb-6">Platform Stats</h3>
+    <div class="space-y-4">
+      <div class="flex justify-between items-center py-3 border-b border-gray-700">
+        <span class="text-gray-300">Total Startups</span>
+        <span class="text-2xl font-bold text-blue-400">{{ analytics.total_startups }}</span>
+      </div>
+      <div class="flex justify-between items-center py-3 border-b border-gray-700">
+        <span class="text-gray-300">Investment Activity</span>
+        <span class="text-2xl font-bold text-green-400">{{ analytics.total_investments }}</span>
+      </div>
+      <div class="flex justify-between items-center py-3">
+        <span class="text-gray-300">Platform Users</span>
+        <span class="text-2xl font-bold text-purple-400">{{ analytics.total_users }}</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card-analytics">
+    <h3 class="text-lg font-semibold text-white mb-6">Ecosystem Health</h3>
+    <div class="space-y-4">
+      <div class="flex justify-between items-center py-3 border-b border-gray-700">
+        <span class="text-gray-300">Open Roles</span>
+        <span class="text-2xl font-bold text-yellow-400">{{ analytics.total_roles }}</span>
+      </div>
+      <div class="flex justify-between items-center py-3">
+        <span class="text-gray-300">Ecosystem Status</span>
+        <span class="inline-block px-3 py-1 bg-green-600 text-green-100 rounded-full text-sm">✓ Healthy</span>
+      </div>
+    </div>
+  </div>
+
+</div>
+
 {% endif %}
 
-{% if role == "Investor" %}
-new Chart(document.getElementById('portfolioValue'), {
-  type: 'line',
-  data: {
-    labels: ['Q1','Q2','Q3','Q4'],
-    datasets: [{
-      label: 'Portfolio Value',
-      data: {{ analytics.portfolio_value | tojson }},
-      borderColor: 'purple'
-    }]
-  }
-});
+</div>
 
-new Chart(document.getElementById('riskAnalysis'), {
-  type: 'bar',
-  data: {
-    labels: ['High','Medium','Low','Very Low'],
-    datasets: [{
-      label: 'Risk Level',
-      data: {{ analytics.risk_analysis | tojson }},
-      backgroundColor: 'red'
-    }]
-  }
-});
-{% endif %}
+<!-- PROFESSIONAL STYLES -->
+<style>
+.stat-card-analytics {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%);
+  border: 1px solid rgba(99, 102, 241, 0.2);
+  padding: 1.5rem;
+  border-radius: 1rem;
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+}
 
-{% if role == "Talent" %}
-new Chart(document.getElementById('skillDemand'), {
-  type: 'bar',
-  data: {
-    labels: ['AI','Web','Data','Cloud'],
-    datasets: [{
-      label: 'Skill Demand',
-      data: {{ analytics.skill_demand | tojson }},
-      backgroundColor: 'orange'
-    }]
-  }
-});
+.stat-card-analytics:hover {
+  border-color: rgba(99, 102, 241, 0.4);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(59, 130, 246, 0.15);
+}
 
-new Chart(document.getElementById('profileVisibility'), {
-  type: 'line',
-  data: {
-    labels: ['Week 1','Week 2','Week 3','Week 4'],
-    datasets: [{
-      label: 'Profile Visibility',
-      data: {{ analytics.profile_visibility | tojson }},
-      borderColor: 'blue'
-    }]
-  }
-});
-{% endif %}
-</script>
+.card-analytics {
+  background: rgba(31, 41, 55, 0.6);
+  border: 1px solid rgba(75, 85, 99, 0.3);
+  padding: 2rem;
+  border-radius: 1rem;
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+}
 
-</body>
-</html>
+.card-analytics:hover {
+  border-color: rgba(99, 102, 241, 0.3);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+}
+</style>
+
+{% endblock %}
